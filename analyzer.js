@@ -3,34 +3,34 @@ let filteredData = [];
 let protoChart, portsChart;
 let showOnlyErrors = false;
 
-// 1. Inicialización de Gráficos
+// 1. Chart Initialization
 function initCharts() {
     const chartStyles = {
         responsive: true,
         maintainAspectRatio: false,
         plugins: { 
-            legend: { labels: { color: '#aaa', font: { size: 10, family: 'Segoe UI' } } } 
-        },
-        scales: {
-            y: { grid: { color: '#1a1a1a' }, ticks: { color: '#555' } },
-            x: { grid: { display: false }, ticks: { color: '#555' } }
+            legend: { 
+                position: 'top',
+                labels: { color: '#aaa', font: { size: 10, family: 'Segoe UI' } } 
+            } 
         }
     };
 
     protoChart = new Chart(document.getElementById('chart-protocols'), {
         type: 'doughnut',
-        data: { labels: [], datasets: [{ data: [], backgroundColor: ['#00f2ff', '#00ff41', '#f3ea5f', '#ff003c', '#9d00ff', '#ff8c00'] }] },
-        options: chartStyles
+        data: { labels: [], datasets: [{ data: [], backgroundColor: ['#00f2ff', '#00ff41', '#f3ea5f', '#ff003c', '#9d00ff', '#ff8c00', '#00ced1'] }] },
+        options: { ...chartStyles, plugins: { ...chartStyles.plugins, title: { display: true, text: 'Protocols Distribution', color: '#fff' } } }
     });
 
+    // Ports Chart changed to Pie
     portsChart = new Chart(document.getElementById('chart-ports'), {
-        type: 'bar',
-        data: { labels: [], datasets: [{ label: 'Paquetes por Puerto', data: [], backgroundColor: '#00f2ff' }] },
-        options: chartStyles
+        type: 'pie',
+        data: { labels: [], datasets: [{ data: [], backgroundColor: ['#00f2ff', '#00ff41', '#f3ea5f', '#ff003c', '#9d00ff', '#ff8c00', '#00ced1', '#ff1493'] }] },
+        options: { ...chartStyles, plugins: { ...chartStyles.plugins, title: { display: true, text: 'Top Destination Ports', color: '#fff' } } }
     });
 }
 
-// 2. Manejo de Archivo
+// 2. File Handling
 const dropZone = document.getElementById('drop-zone');
 const fileInput = document.getElementById('file-input');
 
@@ -60,17 +60,17 @@ fileInput.onchange = (e) => {
                 document.getElementById('main-dashboard').classList.remove('hidden');
                 
                 initCharts();
-                applyFilters(); // CARGA AUTOMÁTICA DE DATOS
+                applyFilters(); 
             }, 600);
         } catch (err) {
-            alert("Error: El archivo no tiene el formato JSON de Wireshark esperado.");
+            alert("Error: File is not a valid Wireshark JSON.");
             document.getElementById('progress-container').classList.add('hidden');
         }
     };
     reader.readAsText(file);
 };
 
-// 3. Procesamiento de Capas
+// 3. Processing Layers
 function processData(json) {
     rawData = json.map(p => {
         const l = p._source.layers;
@@ -92,7 +92,7 @@ function processData(json) {
         let status = "OK";
         if (tcp["tcp.analysis.retransmission"] || tcp["tcp.analysis.duplicate_ack"]) {
             level = "warning";
-            status = "Retransmisión / Latencia";
+            status = "Retransmission / Latency";
         }
         if (flags.includes("RST") || (http["http.response.code"] >= 400)) {
             level = "critical";
@@ -111,14 +111,14 @@ function processData(json) {
         };
     });
 
-    // Poblar Selector de Protocolos
+    // Populate Protocol Select
     const protos = [...new Set(rawData.map(p => p.proto))];
     const select = document.getElementById('filter-proto');
-    select.innerHTML = '<option value="all">Todos los Protocolos</option>';
+    select.innerHTML = '<option value="all">All Protocols</option>';
     protos.forEach(pr => select.innerHTML += `<option value="${pr}">${pr}</option>`);
 }
 
-// 4. Motor de Filtrado
+// 4. Filtering Engine
 function applyFilters() {
     const srcInput = document.getElementById('filter-src-ip').value.toLowerCase();
     const dstInput = document.getElementById('filter-dst-ip').value.toLowerCase();
@@ -138,12 +138,12 @@ function applyFilters() {
     updateUI();
 }
 
-// 5. Renderizado de Interfaz
+// 5. Interface Rendering
 function updateUI() {
     const tbody = document.getElementById('table-body');
     tbody.innerHTML = '';
     
-    // Renderizamos los primeros 300 para mantener fluidez
+    // Render first 300 for performance
     filteredData.slice(0, 300).forEach(p => {
         const tr = document.createElement('tr');
         tr.className = `row-${p.level}`;
@@ -158,7 +158,7 @@ function updateUI() {
         tbody.appendChild(tr);
     });
 
-    // Actualizar KPIs
+    // Update KPIs
     document.getElementById('stat-packets').innerText = filteredData.length.toLocaleString();
     document.getElementById('stat-alerts').innerText = filteredData.filter(p => p.level === 'critical').length;
     document.getElementById('stat-ips').innerText = [...new Set(filteredData.map(p => p.src))].length;
@@ -169,14 +169,14 @@ function updateUI() {
 function updateCharts() {
     if (!protoChart || !portsChart) return;
 
-    // Protocolos
+    // Protocols
     const pMap = {};
     filteredData.forEach(p => pMap[p.proto] = (pMap[p.proto] || 0) + 1);
     protoChart.data.labels = Object.keys(pMap);
     protoChart.data.datasets[0].data = Object.values(pMap);
     protoChart.update();
 
-    // Puertos
+    // Ports (Pie)
     const ptMap = {};
     filteredData.filter(p => p.port !== "N/A").forEach(p => ptMap[p.port] = (ptMap[p.port] || 0) + 1);
     const topPorts = Object.entries(ptMap).sort((a,b) => b[1]-a[1]).slice(0, 8);
