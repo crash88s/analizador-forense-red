@@ -14,21 +14,24 @@
 
     <!-- LANDING SCREEN -->
     <section id="landing-screen" class="full-screen">
-        <div class="upload-box">
-            <h1 class="neon-title">TSHOOT <span class="neon-text-green">TOOL</span></h1>
-            <p class="subtitle">ADVANCED NETWORK FORENSICS</p>
+        <div class="upload-box horizontal-layout">
+            <div class="brand-section">
+                <h1 class="neon-title">TSHOOT <span class="neon-text-green">TOOL</span></h1>
+                <p class="subtitle">ADVANCED NETWORK FORENSICS</p>
+                <p class="credits-main">Software developed by Selvin Mejia</p>
+            </div>
             
             <div class="drop-zone" id="drop-zone">
                 <div class="icon-upload">📡</div>
-                <p>Drag Wireshark JSON here or click to browse</p>
+                <p class="main-instruction">Please upload your Wireshark JSON file</p>
+                <p class="sub-instruction">Drag & Drop here or <span>Click to browse</span></p>
                 <input type="file" id="file-input" hidden accept=".json">
+                
+                <div id="progress-container" class="hidden">
+                    <div class="progress-bar"><div id="progress-fill"></div></div>
+                    <p id="progress-text">Processing packets...</p>
+                </div>
             </div>
-
-            <div id="progress-container" class="hidden">
-                <div class="progress-bar"><div id="progress-fill"></div></div>
-                <p id="progress-text">Processing packets...</p>
-            </div>
-            <p class="credits-main">Software developed by Selvin Mejia</p>
         </div>
     </section>
 
@@ -55,7 +58,6 @@
             </div>
 
             <div class="header-actions">
-                <!-- EXPORT PDF moved here -->
                 <button id="export-pdf" class="btn-neon-green">EXPORT PDF REPORT</button>
                 <button id="btn-reset" class="btn-neon-blue">NEW FILE</button>
             </div>
@@ -81,8 +83,9 @@
                         <label>TCP Flags</label>
                         <input type="text" id="filter-flags" placeholder="SYN, RST, ACK...">
                     </div>
-                    <!-- ERRORS button moved here -->
-                    <button id="btn-only-errors" class="btn-warn" style="width: 100%; margin-top: 10px;">ERRORS</button>
+                    
+                    <button id="btn-only-errors" class="btn-warn">ERRORS</button>
+                    <button id="btn-clear" class="btn-clear">CLEAR FILTERS</button>
                 </div>
                 
                 <div class="sidebar-bottom">
@@ -112,9 +115,7 @@
                                 <th>Status Analysis</th>
                             </tr>
                         </thead>
-                        <tbody id="table-body">
-                            <!-- Data injected by JS -->
-                        </tbody>
+                        <tbody id="table-body"></tbody>
                     </table>
                 </div>
             </main>
