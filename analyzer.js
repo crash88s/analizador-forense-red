@@ -3,11 +3,17 @@ let filteredData = [];
 let protoChart, portsChart, talkersChart;
 let showOnlyErrors = false;
 
+// 1. Chart Initialization (NON-INTERACTIVE UPDATED)
 function initCharts() {
     const chartStyles = {
         responsive: true, maintainAspectRatio: false,
+        events: ['mousemove', 'mouseout', 'touchstart', 'touchmove'], // Keep tooltips, disable clicks
         plugins: { 
-            legend: { position: 'top', labels: { color: '#777', font: { size: 10 } } }, 
+            legend: { 
+                position: 'top', 
+                labels: { color: '#777', font: { size: 10 } },
+                onClick: (e) => e.stopPropagation() // Disable click behavior
+            }, 
             title: { display: true, color: '#fff', font: { size: 13 } } 
         }
     };
@@ -38,6 +44,7 @@ function initCharts() {
     });
 }
 
+// 2. File Handling
 const uploadZone = document.getElementById('upload-zone');
 const fileInput = document.getElementById('file-input');
 uploadZone.onclick = () => fileInput.click();
