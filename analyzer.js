@@ -3,15 +3,10 @@ let filteredData = [];
 let protoChart, portsChart, talkersChart;
 let showOnlyErrors = false;
 
-// 1. Chart Initialization
 function initCharts() {
     const chartStyles = {
         responsive: true, maintainAspectRatio: false,
-        plugins: { 
-            legend: { position: 'top', labels: { color: '#777', font: { size: 10 } } },
-            title: { display: true, color: '#fff', font: { size: 13 } },
-            tooltip: { enabled: true } // Garantiza que no haya "?" en gráficas
-        }
+        plugins: { legend: { position: 'top', labels: { color: '#777', font: { size: 10 } } }, title: { display: true, color: '#fff', font: { size: 13 } } }
     };
     if (protoChart) protoChart.destroy();
     if (portsChart) portsChart.destroy();
@@ -36,7 +31,6 @@ function initCharts() {
     });
 }
 
-// 2. File Handling
 const uploadZone = document.getElementById('upload-zone');
 const fileInput = document.getElementById('file-input');
 uploadZone.onclick = () => fileInput.click();
