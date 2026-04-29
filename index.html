@@ -11,24 +11,21 @@
 </head>
 <body class="dark-mode">
 
-    <!-- PACKET DETAIL MODAL -->
     <div id="packet-modal" class="modal hidden">
         <div class="modal-content">
             <div class="modal-header">
                 <h2 class="neon-text-blue">PACKET DEEP INSPECTION</h2>
                 <span class="close-modal">&times;</span>
             </div>
-            <div class="modal-body">
-                <pre id="json-display"></pre>
-            </div>
+            <div class="modal-body"><pre id="json-display"></pre></div>
         </div>
     </div>
 
-    <!-- LANDING SCREEN -->
     <section id="landing-screen" class="full-screen">
         <div class="upload-box horizontal-layout">
             <div class="brand-section">
-                <div class="tooltip-wrapper" data-tooltip="Analizador de red local. Procesa archivos JSON de Wireshark para detectar latencia, retransmisiones y errores sin subir datos a la nube.">
+                <!-- Tooltip en Título -->
+                <div class="header-note" data-note="Analizador local: Procesa archivos JSON de Wireshark para detectar latencia y errores sin subir datos a la nube.">
                     <h1 class="neon-title">TSHOOT <span class="neon-text-green">TOOL</span></h1>
                 </div>
                 <p class="subtitle">ADVANCED NETWORK FORENSICS v2.5</p>
@@ -50,7 +47,6 @@
         </div>
     </section>
 
-    <!-- MAIN DASHBOARD -->
     <section id="main-dashboard" class="hidden">
         <header class="cyber-header">
             <div class="logo-area"><span class="logo-text">TSHOOT <span class="neon-text-green">TOOL</span></span></div>
@@ -72,9 +68,7 @@
                     <span id="stat-ips" class="stat-pill-value text-blue">0</span>
                 </div>
             </div>
-            <div class="header-actions">
-                <button id="export-pdf" class="btn-neon-green">EXPORT PDF REPORT</button>
-            </div>
+            <div class="header-actions"><button id="export-pdf" class="btn-neon-green">EXPORT PDF REPORT</button></div>
         </header>
 
         <div class="app-container">
@@ -90,22 +84,19 @@
                 </div>
                 <div class="sidebar-bottom">
                     <button id="btn-reset" class="btn-neon-blue-sidebar">NEW FILE</button>
-                    <div class="sidebar-signature">
-                        <p class="sig-by">BY</p>
-                        <p class="sig-name">SELVIN MEJIA</p>
-                    </div>
+                    <div class="sidebar-signature"><p class="sig-by">BY</p><p class="sig-name">SELVIN MEJIA</p></div>
                 </div>
             </aside>
 
             <main class="content">
                 <div class="charts-row">
-                    <div class="chart-box tooltip-wrapper" data-tooltip="Porcentaje de protocolos detectados (TCP, UDP, TLS, etc).">
+                    <div class="chart-box header-note" data-note="Distribución de los protocolos detectados en la captura.">
                         <canvas id="chart-protocols"></canvas>
                     </div>
-                    <div class="chart-box tooltip-wrapper" data-tooltip="Puertos de destino más activos. Útil para identificar servicios.">
+                    <div class="chart-box header-note" data-note="Puertos de destino con mayor actividad.">
                         <canvas id="chart-ports"></canvas>
                     </div>
-                    <div class="chart-box tooltip-wrapper" data-tooltip="IPs de origen que generan mayor volumen de tráfico en Bytes.">
+                    <div class="chart-box header-note" data-note="IPs con mayor consumo de ancho de banda.">
                         <canvas id="chart-talkers"></canvas>
                     </div>
                 </div>
@@ -114,15 +105,15 @@
                     <table id="traffic-table">
                         <thead>
                             <tr>
-                                <th class="col-delta tooltip-wrapper" data-tooltip="Tiempo transcurrido desde el paquete anterior.">Delta</th>
-                                <th class="col-ip tooltip-wrapper" data-tooltip="Dirección IP de quien envía el paquete.">Source IP</th>
-                                <th class="col-ip tooltip-wrapper" data-tooltip="Dirección IP de quien recibe el paquete.">Destination IP</th>
-                                <th class="col-domain tooltip-wrapper" data-tooltip="Nombre de dominio extraído via HTTP Host o TLS SNI.">Domain / Host</th>
-                                <th class="col-ttl tooltip-wrapper" data-tooltip="Time To Live: Saltos restantes antes de expirar.">TTL</th>
-                                <th class="col-win tooltip-wrapper" data-tooltip="TCP Window Size: Capacidad del búfer del receptor.">Win</th>
-                                <th class="col-flags tooltip-wrapper" data-tooltip="Indicadores de control TCP (SYN, ACK, RST, FIN).">Flags</th>
-                                <th class="col-port tooltip-wrapper" data-tooltip="Puerto de servicio utilizado en la comunicación.">Port</th>
-                                <th class="col-status tooltip-wrapper" data-tooltip="Clasificación del paquete: Normal, Retransmisión o Error Crítico.">Status</th>
+                                <th class="col-delta"><span class="header-note" data-note="Tiempo entre este paquete y el anterior.">Delta</span></th>
+                                <th class="col-ip"><span class="header-note" data-note="IP que originó el paquete.">Source IP</span></th>
+                                <th class="col-ip"><span class="header-note" data-note="IP que recibió el paquete.">Destination IP</span></th>
+                                <th class="col-domain"><span class="header-note" data-note="Nombre del sitio (vía HTTP Host o TLS SNI).">Domain / Host</span></th>
+                                <th class="col-ttl"><span class="header-note" data-note="TTL: Saltos restantes de vida del paquete.">TTL</span></th>
+                                <th class="col-win"><span class="header-note" data-note="Tamaño de la ventana del receptor (Buffer).">Win</span></th>
+                                <th class="col-flags"><span class="header-note" data-note="Flags TCP (SYN, ACK, RST, FIN).">Flags</span></th>
+                                <th class="col-port"><span class="header-note" data-note="Puerto de servicio destino.">Port</span></th>
+                                <th class="col-status"><span class="header-note" data-note="Estado del paquete: Normal o Error.">Status</span></th>
                             </tr>
                         </thead>
                         <tbody id="table-body"></tbody>
