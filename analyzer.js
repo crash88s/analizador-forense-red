@@ -6,7 +6,10 @@ let showOnlyErrors = false;
 function initCharts() {
     const chartStyles = {
         responsive: true, maintainAspectRatio: false,
-        plugins: { legend: { position: 'top', labels: { color: '#777', font: { size: 10 } } }, title: { display: true, color: '#fff', font: { size: 13 } } }
+        plugins: { 
+            legend: { position: 'top', labels: { color: '#777', font: { size: 10 } } }, 
+            title: { display: true, color: '#fff', font: { size: 13 } } 
+        }
     };
     if (protoChart) protoChart.destroy();
     if (portsChart) portsChart.destroy();
@@ -78,20 +81,25 @@ function processData(json) {
         if (l.http && l.http["http.host"]) domain = l.http["http.host"];
         else if (tls["tls.handshake"] && tls["tls.handshake"]["tls.handshake.extensions_server_name"]) domain = tls["tls.handshake"]["tls.handshake.extensions_server_name"];
 
+        const isRetrans = !!tcp["tcp.analysis.retransmission"];
+        const winSize = tcp["tcp.window_size_value"] || "---";
+
+        let level = (isReset || (winSize === "0")) ? "critical" : (isRetrans ? "warning" : "normal");
+
         return {
             delta: parseFloat(l.frame["frame.time_delta"] || 0).toFixed(4),
             src: ip["ip.src"] || ip["ipv6.src"] || "N/A",
             dst: ip["ip.dst"] || ip["ipv6.dst"] || "N/A",
             domain: domain,
             ttl: ip["ip.ttl"] || ip["ipv6.hlim"] || "---",
-            win: tcp["tcp.window_size_value"] || "---",
+            win: winSize,
             proto: l.frame["frame.protocols"].split(':').pop().toUpperCase(),
             port: tcp["tcp.dstport"] || udp["udp.dstport"] || "N/A",
             size: parseInt(l.frame["frame.len"] || 0),
             flags: flags.join(',') || "---",
             isReset: isReset,
-            isRetrans: !!tcp["tcp.analysis.retransmission"],
-            level: isReset ? "critical" : (!!tcp["tcp.analysis.retransmission"] ? "warning" : "normal"),
+            isRetrans: isRetrans,
+            level: level,
             original: l
         };
     });
