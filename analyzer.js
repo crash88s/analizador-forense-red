@@ -3,13 +3,13 @@ let filteredData = [];
 let protoChart, portsChart, talkersChart;
 let showOnlyErrors = false;
 
-// 1. Chart Initialization (3 Charts now)
+// 1. Chart Initialization
 function initCharts() {
     const chartStyles = {
         responsive: true,
         maintainAspectRatio: false,
         plugins: { 
-            legend: { position: 'top', labels: { color: '#aaa', font: { size: 9 } } },
+            legend: { position: 'top', labels: { color: '#aaa', font: { size: 10 } } },
             title: { display: true, color: '#fff', font: { size: 13 } }
         }
     };
@@ -56,8 +56,7 @@ function handleFile(file) {
 
     reader.onprogress = (e) => {
         if (e.lengthComputable) {
-            const percent = (e.loaded / e.total) * 100;
-            document.getElementById('progress-fill').style.width = percent + '%';
+            document.getElementById('progress-fill').style.width = (e.loaded / e.total * 100) + '%';
         }
     };
 
@@ -79,7 +78,7 @@ function handleFile(file) {
     reader.readAsText(file);
 }
 
-// 3. Processing Data
+// 3. Processing
 function processData(json) {
     rawData = json.map(p => {
         const l = p._source.layers;
@@ -135,7 +134,7 @@ function processData(json) {
     protos.forEach(pr => select.innerHTML += `<option value="${pr}">${pr}</option>`);
 }
 
-// 4. Filtering Engine
+// 4. Filtering
 function applyFilters() {
     const srcInput = document.getElementById('filter-src-ip').value.toLowerCase();
     const dstInput = document.getElementById('filter-dst-ip').value.toLowerCase();
@@ -154,7 +153,7 @@ function applyFilters() {
     updateUI();
 }
 
-// FIX: CLEAR FILTERS DOES NOT RESET APP ANYMORE
+// CLEAR FILTERS - NO RELOAD
 document.getElementById('btn-clear').onclick = () => {
     document.getElementById('filter-src-ip').value = "";
     document.getElementById('filter-dst-ip').value = "";
@@ -174,13 +173,13 @@ function updateUI() {
         tr.className = `row-${p.level}`;
         tr.innerHTML = `
             <td>${p.delta} s</td>
-            <td>${p.src}</td>
-            <td>${p.dst}</td>
-            <td style="color:var(--neon-blue)">${p.domain}</td>
-            <td>${p.ttl}</td>
-            <td>${p.win}</td>
+            <td title="${p.src}">${p.src}</td>
+            <td title="${p.dst}">${p.dst}</td>
+            <td style="color:var(--neon-blue)" title="${p.domain}">${p.domain}</td>
+            <td style="text-align:center">${p.ttl}</td>
+            <td style="text-align:center">${p.win}</td>
             <td>${p.flags}</td>
-            <td>${p.port}</td>
+            <td style="text-align:center">${p.port}</td>
             <td>${p.level.toUpperCase()}</td>
         `;
         tr.onclick = () => showPacketDetail(p.original);
@@ -191,22 +190,18 @@ function updateUI() {
     document.getElementById('stat-resets').innerText = filteredData.filter(p => p.isReset).length;
     document.getElementById('stat-retrans').innerText = filteredData.filter(p => p.isRetrans).length;
     document.getElementById('stat-ips').innerText = [...new Set(filteredData.map(p => p.src))].length;
-    
     updateCharts();
 }
 
-// 5. Chart Data Logic (Including Top Talkers)
 function updateCharts() {
     if (!protoChart || !portsChart || !talkersChart) return;
-
-    // Protocols
+    
     const pMap = {};
     filteredData.forEach(p => pMap[p.proto] = (pMap[p.proto] || 0) + 1);
     protoChart.data.labels = Object.keys(pMap);
     protoChart.data.datasets[0].data = Object.values(pMap);
     protoChart.update();
 
-    // Ports
     const ptMap = {};
     filteredData.filter(p => p.port !== "N/A").forEach(p => ptMap[p.port] = (ptMap[p.port] || 0) + 1);
     const topPorts = Object.entries(ptMap).sort((a,b) => b[1]-a[1]).slice(0, 8);
@@ -214,7 +209,6 @@ function updateCharts() {
     portsChart.data.datasets[0].data = topPorts.map(x => x[1]);
     portsChart.update();
 
-    // Top Talkers Module
     const talkMap = {};
     filteredData.forEach(p => talkMap[p.src] = (talkMap[p.src] || 0) + p.size);
     const topTalkers = Object.entries(talkMap).sort((a,b) => b[1]-a[1]).slice(0, 5);
@@ -223,7 +217,6 @@ function updateCharts() {
     talkersChart.update();
 }
 
-// 6. Modal Logic
 function showPacketDetail(layers) {
     document.getElementById('json-display').innerText = JSON.stringify(layers, null, 4);
     document.getElementById('packet-modal').classList.remove('hidden');
@@ -232,20 +225,17 @@ function showPacketDetail(layers) {
 document.querySelector('.close-modal').onclick = () => document.getElementById('packet-modal').classList.add('hidden');
 window.onclick = (e) => { if (e.target == document.getElementById('packet-modal')) document.getElementById('packet-modal').classList.add('hidden'); };
 
-// Listeners
+// Event Listeners
 document.getElementById('filter-src-ip').oninput = applyFilters;
 document.getElementById('filter-dst-ip').oninput = applyFilters;
 document.getElementById('filter-proto').onchange = applyFilters;
 document.getElementById('filter-flags').oninput = applyFilters;
-
 document.getElementById('btn-only-errors').onclick = function() {
     showOnlyErrors = !showOnlyErrors;
     this.classList.toggle('active');
     applyFilters();
 };
-
 document.getElementById('btn-reset').onclick = () => location.reload();
-
 document.getElementById('export-pdf').onclick = () => {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF('l', 'mm', 'a4');
@@ -255,5 +245,5 @@ document.getElementById('export-pdf').onclick = () => {
         body: filteredData.slice(0, 50).map(p => [p.delta, p.src, p.dst, p.domain, p.ttl, p.win, p.port, p.level]),
         startY: 25 
     });
-    doc.save('Forensic_Report_Pro.pdf');
+    doc.save('Forensic_Report.pdf');
 };
