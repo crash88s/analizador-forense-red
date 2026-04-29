@@ -3,18 +3,18 @@ let filteredData = [];
 let protoChart, portsChart, talkersChart;
 let showOnlyErrors = false;
 
-// 1. Chart Initialization (NON-INTERACTIVE UPDATED)
+// 1. Chart Initialization
 function initCharts() {
     const chartStyles = {
         responsive: true, maintainAspectRatio: false,
-        events: ['mousemove', 'mouseout', 'touchstart', 'touchmove'], // Keep tooltips, disable clicks
+        events: ['mousemove', 'mouseout', 'touchstart', 'touchmove'],
         plugins: { 
             legend: { 
                 position: 'top', 
-                labels: { color: '#777', font: { size: 10 } },
-                onClick: (e) => e.stopPropagation() // Disable click behavior
+                labels: { color: '#777', font: { size: 9 } },
+                onClick: (e) => e.stopPropagation()
             }, 
-            title: { display: true, color: '#fff', font: { size: 13 } } 
+            title: { display: true, color: '#fff', font: { size: 12 } } 
         }
     };
     if (protoChart) protoChart.destroy();
@@ -24,27 +24,27 @@ function initCharts() {
     protoChart = new Chart(document.getElementById('chart-protocols'), {
         type: 'doughnut',
         data: { labels: [], datasets: [{ data: [], backgroundColor: ['#00f2ff', '#00ff41', '#f3ea5f', '#ff003c', '#9d00ff', '#ff8c00'] }] },
-        options: { ...chartStyles, plugins: { ...chartStyles.plugins, title: { ...chartStyles.plugins.title, text: 'Protocols Distribution' } } }
+        options: { ...chartStyles, plugins: { ...chartStyles.plugins, title: { text: 'Protocols Distribution' } } }
     });
 
     portsChart = new Chart(document.getElementById('chart-ports'), {
         type: 'pie',
         data: { labels: [], datasets: [{ data: [], backgroundColor: ['#00f2ff', '#00ff41', '#f3ea5f', '#ff003c', '#9d00ff', '#ff1493'] }] },
-        options: { ...chartStyles, plugins: { ...chartStyles.plugins, title: { ...chartStyles.plugins.title, text: 'Top Destination Ports' } } }
+        options: { ...chartStyles, plugins: { ...chartStyles.plugins, title: { text: 'Top Destination Ports' } } }
     });
 
     talkersChart = new Chart(document.getElementById('chart-talkers'), {
         type: 'bar',
-        data: { labels: [], datasets: [{ label: 'Total Bytes', data: [], backgroundColor: '#00ff41' }] },
+        data: { labels: [], datasets: [{ label: 'Bytes', data: [], backgroundColor: '#00ff41' }] },
         options: { 
             ...chartStyles, 
-            plugins: { ...chartStyles.plugins, title: { ...chartStyles.plugins.title, text: 'Top Talkers (Bandwidth)' } },
+            plugins: { ...chartStyles.plugins, title: { text: 'Top Talkers (Bandwidth)' } },
             scales: { y: { grid: { color: '#111' }, ticks: { color: '#444' } }, x: { grid: { display: false }, ticks: { color: '#444' } } }
         }
     });
 }
 
-// 2. File Handling
+// 2. File Handling with Progress Bar Logic
 const uploadZone = document.getElementById('upload-zone');
 const fileInput = document.getElementById('file-input');
 uploadZone.onclick = () => fileInput.click();
@@ -52,23 +52,39 @@ fileInput.onchange = (e) => handleFile(e.target.files[0]);
 
 function handleFile(file) {
     if (!file || !file.name.endsWith('.json')) { alert("Please upload a valid JSON file."); return; }
+    
+    // Switch UI to Progress
+    document.getElementById('upload-content').classList.add('hidden');
     document.getElementById('progress-container').classList.remove('hidden');
+    
     const reader = new FileReader();
-    reader.onprogress = (e) => { if (e.lengthComputable) document.getElementById('progress-fill').style.width = (e.loaded / e.total * 100) + '%'; };
+
+    reader.onprogress = (e) => {
+        if (e.lengthComputable) {
+            const percent = (e.loaded / e.total) * 100;
+            document.getElementById('progress-fill').style.width = percent + '%';
+        }
+    };
+
     reader.onload = (e) => {
         try {
             const json = JSON.parse(e.target.result);
             processData(json);
+            // Small aesthetic delay to see the bar full
             setTimeout(() => {
                 document.getElementById('landing-screen').classList.add('hidden');
                 document.getElementById('main-dashboard').classList.remove('hidden');
                 initCharts(); applyFilters(); 
-            }, 600);
-        } catch (err) { alert("Error parsing JSON."); document.getElementById('progress-container').classList.add('hidden'); }
+            }, 800);
+        } catch (err) { 
+            alert("Error parsing JSON."); 
+            location.reload(); 
+        }
     };
     reader.readAsText(file);
 }
 
+// 3. Data Processing
 function processData(json) {
     rawData = json.map(p => {
         const l = p._source.layers;
@@ -90,7 +106,6 @@ function processData(json) {
 
         const isRetrans = !!tcp["tcp.analysis.retransmission"];
         const winSize = tcp["tcp.window_size_value"] || "---";
-
         let level = (isReset || winSize === "0") ? "critical" : (isRetrans ? "warning" : "normal");
 
         return {
@@ -116,6 +131,7 @@ function processData(json) {
     protos.forEach(pr => select.innerHTML += `<option value="${pr}">${pr}</option>`);
 }
 
+// 4. Filtering
 function applyFilters() {
     const srcInput = document.getElementById('filter-src-ip').value.toLowerCase();
     const dstInput = document.getElementById('filter-dst-ip').value.toLowerCase();
@@ -145,7 +161,7 @@ function updateUI() {
     filteredData.slice(0, 300).forEach(p => {
         const tr = document.createElement('tr');
         tr.className = `row-${p.level}`;
-        tr.innerHTML = `<td class="col-delta">${p.delta} s</td><td class="col-ip">${p.src}</td><td class="col-ip">${p.dst}</td><td class="col-domain" style="color:var(--neon-blue)">${p.domain}</td><td class="col-ttl">${p.ttl}</td><td class="col-win">${p.win}</td><td class="col-flags">${p.flags}</td><td class="col-port">${p.port}</td><td class="col-status">${p.level.toUpperCase()}</td>`;
+        tr.innerHTML = `<td class="col-delta">${p.delta} s</td><td class="col-ip">${p.src}</td><td class="col-ip">${p.dst}</td><td class="col-domain" style="color:var(--neon-blue)">${p.domain}</td><td class="col-ttl" style="text-align:center">${p.ttl}</td><td class="col-win" style="text-align:center">${p.win}</td><td class="col-flags">${p.flags}</td><td class="col-port" style="text-align:center">${p.port}</td><td class="col-status">${p.level.toUpperCase()}</td>`;
         tr.onclick = () => { 
             document.getElementById('json-display').innerText = JSON.stringify(p.original, null, 4); 
             document.getElementById('packet-modal').classList.remove('hidden'); 
