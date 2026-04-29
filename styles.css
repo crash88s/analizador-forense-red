@@ -18,7 +18,6 @@ body, html {
 
 .hidden { display: none !important; }
 
-/* NEON ANIMATIONS */
 @keyframes neon-flicker {
     0%, 18%, 22%, 25%, 53%, 57%, 100% {
         text-shadow: 0 0 10px #fff, 0 0 20px var(--neon-blue), 0 0 30px var(--neon-blue);
@@ -40,30 +39,14 @@ body, html {
 }
 
 .brand-section { flex: 1; text-align: left; }
-
-.neon-title {
-    font-size: 4rem; margin: 0; color: #fff;
-    text-transform: uppercase; font-weight: 900;
-    animation: neon-flicker 4s infinite alternate;
-}
-
+.neon-title { font-size: 4rem; margin: 0; color: #fff; text-transform: uppercase; font-weight: 900; animation: neon-flicker 4s infinite alternate; }
 .neon-text-green { color: var(--neon-green); text-shadow: 0 0 15px var(--neon-green); }
 .subtitle { letter-spacing: 5px; font-size: 0.8rem; color: var(--neon-blue); margin: 10px 0 40px 0; opacity: 0.8; }
 
-/* CREDITS NEON MAIN */
 .credits-neon-main { font-size: 1.1rem; color: #eee; margin-top: 20px; }
-.credits-neon-main span {
-    color: var(--neon-blue);
-    text-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--neon-blue);
-    font-weight: bold;
-}
+.credits-neon-main span { color: var(--neon-blue); text-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--neon-blue); font-weight: bold; }
 
-/* UPLOAD ZONE */
-.upload-zone {
-    flex: 1; padding: 50px; border: 2px solid #222;
-    border-radius: 20px; cursor: pointer; transition: 0.3s;
-    text-align: center; background: rgba(255,255,255,0.02);
-}
+.upload-zone { flex: 1; padding: 50px; border: 2px solid #222; border-radius: 20px; cursor: pointer; transition: 0.3s; text-align: center; background: rgba(255,255,255,0.02); }
 .upload-zone:hover { border-color: var(--neon-blue); box-shadow: 0 0 20px rgba(0, 242, 255, 0.1); }
 
 .icon-upload { font-size: 3.5rem; margin-bottom: 15px; }
@@ -72,83 +55,46 @@ body, html {
 .sub-instruction span { color: var(--neon-green); text-decoration: underline; font-weight: bold; }
 
 /* DASHBOARD */
-.cyber-header {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 0 25px; background: #000; border-bottom: 2px solid var(--neon-blue);
-    height: 70px;
-}
-
+.cyber-header { display: flex; justify-content: space-between; align-items: center; padding: 0 25px; background: #000; border-bottom: 2px solid var(--neon-blue); height: 70px; }
 .logo-text { font-weight: bold; font-size: 1.3rem; color: var(--neon-blue); }
-
-.stats-grid {
-    display: flex; gap: 40px; background: #0d0d0d;
-    padding: 5px 30px; border-radius: 50px; border: 1px solid #222;
-}
-
+.stats-grid { display: flex; gap: 40px; background: #0d0d0d; padding: 5px 30px; border-radius: 50px; border: 1px solid #222; }
 .stat-item { display: flex; flex-direction: column; align-items: center; }
 .stat-label { font-size: 0.6rem; color: var(--text-gray); letter-spacing: 1px; }
 .stat-value { font-family: monospace; font-size: 1.2rem; font-weight: bold; }
-
 .text-danger { color: var(--cyber-red); }
 .text-blue { color: var(--neon-blue); }
 
 .app-container { display: grid; grid-template-columns: 280px 1fr; height: calc(100vh - 72px); }
-
-.sidebar {
-    background: var(--bg-panel); border-right: 1px solid #222;
-    padding: 20px; display: flex; flex-direction: column;
-}
-
+.sidebar { background: var(--bg-panel); border-right: 1px solid #222; padding: 20px; display: flex; flex-direction: column; }
 .filter-group { margin-bottom: 15px; width: 100%; }
 .filter-group label { display: block; font-size: 0.7rem; color: var(--text-gray); margin-bottom: 5px; }
+input, select { width: 100%; background: #000; border: 1px solid #333; color: var(--neon-green); padding: 10px; border-radius: 5px; outline: none; font-size: 0.8rem; }
 
-input, select {
-    width: 100%; background: #000; border: 1px solid #333; color: var(--neon-green);
-    padding: 10px; border-radius: 5px; outline: none; font-size: 0.8rem;
-}
-
-/* SIDEBAR BOTTOM SECTION */
 .sidebar-bottom { text-align: center; padding-top: 20px; margin-top: auto; border-top: 1px solid #222; }
-
-/* NEW FILE BUTTON SIDEBAR STYLE */
-.btn-neon-blue-sidebar { 
-    background: transparent; border: 1px solid var(--neon-blue); color: var(--neon-blue); 
-    padding: 10px; width: 100%; margin-bottom: 20px; font-size: 0.8rem;
-}
+.btn-neon-blue-sidebar { background: transparent; border: 1px solid var(--neon-blue); color: var(--neon-blue); padding: 10px; width: 100%; margin-bottom: 20px; font-size: 0.8rem; }
 .btn-neon-blue-sidebar:hover { background: var(--neon-blue); color: #000; box-shadow: 0 0 15px var(--neon-blue); }
+.credits-neon-sidebar { font-size: 0.7rem; color: #fff; text-transform: uppercase; letter-spacing: 3px; text-shadow: 0 0 10px var(--neon-blue); margin-top: 5px; }
 
-.credits-neon-sidebar { 
-    font-size: 0.7rem; color: #fff; text-transform: uppercase; letter-spacing: 3px; 
-    text-shadow: 0 0 10px var(--neon-blue); margin-top: 5px;
-}
-
-/* MAIN CONTENT */
+/* CONTENT */
 .content { padding: 30px; overflow-y: auto; background: #050505; display: flex; flex-direction: column; gap: 30px; }
 .charts-row { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; min-height: 320px; }
 .chart-box { background: var(--bg-panel); padding: 20px; border-radius: 15px; border: 1px solid #222; }
 
 .table-wrapper { background: var(--bg-panel); border-radius: 10px; border: 1px solid #222; overflow-x: auto; margin-top: 10px; }
-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+table { width: 100%; border-collapse: collapse; font-size: 0.75rem; min-width: 1100px; }
 th { background: #111; color: var(--neon-blue); padding: 15px; text-align: left; position: sticky; top: 0; }
 td { padding: 12px 15px; border-bottom: 1px solid #1a1a1a; color: #ccc; }
 
 .row-critical { background: rgba(255, 0, 60, 0.08) !important; color: #ff809b !important; }
 .row-warning { background: rgba(243, 234, 95, 0.05) !important; color: var(--cyber-yellow) !important; }
 
-/* BUTTONS */
 button { cursor: pointer; transition: 0.2s; font-weight: bold; border-radius: 4px; border: none; }
-
 .btn-neon-green { background: transparent; border: 1px solid var(--neon-green); color: var(--neon-green); padding: 8px 15px; }
 .btn-neon-green:hover { background: var(--neon-green); color: #000; box-shadow: 0 0 15px var(--neon-green); }
-
 .btn-warn { background: transparent; border: 1px solid var(--cyber-red); color: var(--cyber-red); padding: 12px; width: 100%; margin-top: 10px; }
 .btn-warn.active { background: var(--cyber-red); color: white; box-shadow: 0 0 10px var(--cyber-red); }
+.btn-clear { background: #111; border: 1px solid #444; color: #888; padding: 12px; width: 100%; margin-top: 15px; font-size: 0.8rem; }
+.btn-clear:hover { border-color: var(--neon-blue); color: var(--neon-blue); }
 
-.btn-clear {
-    background: #111; border: 1px solid #444; color: #888;
-    padding: 12px; width: 100%; margin-top: 15px; font-size: 0.8rem;
-}
-.btn-clear:hover { border-color: var(--neon-blue); color: var(--neon-blue); box-shadow: 0 0 10px rgba(0, 242, 255, 0.2); }
-
-.progress-bar { width: 100%; height: 4px; background: #222; border-radius: 10px; margin-top: 15px; overflow: hidden; }
 #progress-fill { height: 100%; width: 0%; background: var(--neon-blue); transition: width 0.3s; }
+.progress-bar { width: 100%; height: 4px; background: #222; border-radius: 10px; margin-top: 15px; overflow: hidden; }
