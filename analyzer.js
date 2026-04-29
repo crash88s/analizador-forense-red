@@ -9,7 +9,7 @@ function initCharts() {
         responsive: true,
         maintainAspectRatio: false,
         plugins: { 
-            legend: { position: 'top', labels: { color: '#aaa', font: { size: 10 } } },
+            legend: { position: 'top', labels: { color: '#777', font: { size: 10 } } },
             title: { display: true, color: '#fff', font: { size: 13 } }
         }
     };
@@ -35,7 +35,7 @@ function initCharts() {
         options: { 
             ...chartStyles, 
             plugins: { ...chartStyles.plugins, title: { ...chartStyles.plugins.title, text: 'Top Talkers (Bandwidth)' } },
-            scales: { y: { grid: { color: '#1a1a1a' }, ticks: { color: '#555' } }, x: { grid: { display: false }, ticks: { color: '#555' } } }
+            scales: { y: { grid: { color: '#111' }, ticks: { color: '#444' } }, x: { grid: { display: false }, ticks: { color: '#444' } } }
         }
     });
 }
@@ -53,13 +53,11 @@ function handleFile(file) {
     }
     document.getElementById('progress-container').classList.remove('hidden');
     const reader = new FileReader();
-
     reader.onprogress = (e) => {
         if (e.lengthComputable) {
             document.getElementById('progress-fill').style.width = (e.loaded / e.total * 100) + '%';
         }
     };
-
     reader.onload = (e) => {
         try {
             const json = JSON.parse(e.target.result);
@@ -153,7 +151,6 @@ function applyFilters() {
     updateUI();
 }
 
-// CLEAR FILTERS - NO RELOAD
 document.getElementById('btn-clear').onclick = () => {
     document.getElementById('filter-src-ip').value = "";
     document.getElementById('filter-dst-ip').value = "";
@@ -171,16 +168,17 @@ function updateUI() {
     filteredData.slice(0, 300).forEach(p => {
         const tr = document.createElement('tr');
         tr.className = `row-${p.level}`;
+        
         tr.innerHTML = `
-            <td>${p.delta} s</td>
-            <td title="${p.src}">${p.src}</td>
-            <td title="${p.dst}">${p.dst}</td>
-            <td style="color:var(--neon-blue)" title="${p.domain}">${p.domain}</td>
-            <td style="text-align:center">${p.ttl}</td>
-            <td style="text-align:center">${p.win}</td>
-            <td>${p.flags}</td>
-            <td style="text-align:center">${p.port}</td>
-            <td>${p.level.toUpperCase()}</td>
+            <td class="col-delta">${p.delta} s</td>
+            <td class="col-ip">${p.src}</td>
+            <td class="col-ip">${p.dst}</td>
+            <td class="col-domain" style="color:var(--neon-blue)">${p.domain}</td>
+            <td class="col-ttl">${p.ttl}</td>
+            <td class="col-win">${p.win}</td>
+            <td class="col-flags">${p.flags}</td>
+            <td class="col-port">${p.port}</td>
+            <td class="col-status">${p.level.toUpperCase()}</td>
         `;
         tr.onclick = () => showPacketDetail(p.original);
         tbody.appendChild(tr);
@@ -195,7 +193,6 @@ function updateUI() {
 
 function updateCharts() {
     if (!protoChart || !portsChart || !talkersChart) return;
-    
     const pMap = {};
     filteredData.forEach(p => pMap[p.proto] = (pMap[p.proto] || 0) + 1);
     protoChart.data.labels = Object.keys(pMap);
@@ -225,24 +222,26 @@ function showPacketDetail(layers) {
 document.querySelector('.close-modal').onclick = () => document.getElementById('packet-modal').classList.add('hidden');
 window.onclick = (e) => { if (e.target == document.getElementById('packet-modal')) document.getElementById('packet-modal').classList.add('hidden'); };
 
-// Event Listeners
 document.getElementById('filter-src-ip').oninput = applyFilters;
 document.getElementById('filter-dst-ip').oninput = applyFilters;
 document.getElementById('filter-proto').onchange = applyFilters;
 document.getElementById('filter-flags').oninput = applyFilters;
+
 document.getElementById('btn-only-errors').onclick = function() {
     showOnlyErrors = !showOnlyErrors;
     this.classList.toggle('active');
     applyFilters();
 };
+
 document.getElementById('btn-reset').onclick = () => location.reload();
+
 document.getElementById('export-pdf').onclick = () => {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF('l', 'mm', 'a4');
     doc.text("Network Forensic Report - Selvin Mejia", 14, 15);
     doc.autoTable({ 
-        head: [['Delta', 'Source', 'Destination', 'Domain', 'TTL', 'Win', 'Port', 'Status']], 
-        body: filteredData.slice(0, 50).map(p => [p.delta, p.src, p.dst, p.domain, p.ttl, p.win, p.port, p.level]),
+        head: [['Delta', 'Source', 'Destination', 'Domain', 'TTL', 'Win', 'Flags', 'Port', 'Status']], 
+        body: filteredData.slice(0, 50).map(p => [p.delta, p.src, p.dst, p.domain, p.ttl, p.win, p.flags, p.port, p.level]),
         startY: 25 
     });
     doc.save('Forensic_Report.pdf');
