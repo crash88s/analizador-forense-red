@@ -43,7 +43,6 @@
                     <input type="file" id="file-input" hidden accept=".json">
                 </div>
                 
-                <!-- PROGRESS BAR RESTORED & IMPROVED -->
                 <div id="progress-container" class="hidden">
                     <p id="progress-text">CYBER SCAN IN PROGRESS...</p>
                     <div class="progress-bar">
@@ -106,11 +105,11 @@
                                 <th class="col-ip"><span class="th-note" data-note="Origin IP.">Source IP</span></th>
                                 <th class="col-ip"><span class="th-note" data-note="Destination IP.">Destination IP</span></th>
                                 <th class="col-domain"><span class="th-note" data-note="Domain (HTTP/TLS).">Domain / Host</span></th>
-                                <th class="col-ttl"><span class="th-note" data-note="Time To Live.">TTL</span></th>
-                                <th class="col-win"><span class="th-note" data-note="Window Size.">Win</span></th>
-                                <th class="col-flags"><span class="th-note" data-note="TCP Control Flags.">Flags</span></th>
-                                <th class="col-port"><span class="th-note" data-note="Destination Port.">Port</span></th>
-                                <th class="col-status"><span class="th-note" data-note="Packet Status.">Status</span></th>
+                                <th class="col-ttl"><span class="th-note" data-note="Time To Live (Hops).">TTL</span></th>
+                                <th class="col-win"><span class="th-note" data-note="TCP Window size.">Win</span></th>
+                                <th class="col-flags"><span class="th-note" data-note="Control Flags.">Flags</span></th>
+                                <th class="col-port"><span class="th-note" data-note="Service Port.">Port</span></th>
+                                <th class="col-status"><span class="th-note" data-note="Forensic Status.">Status</span></th>
                             </tr>
                         </thead>
                         <tbody id="table-body"></tbody>
