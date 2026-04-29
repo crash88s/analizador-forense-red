@@ -5,12 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tshoot Tool Pro | By Selvin Mejia</title>
     <link rel="stylesheet" href="styles.css">
+    <!-- External Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 </head>
 <body class="dark-mode">
 
+    <!-- PACKET DETAIL MODAL -->
     <div id="packet-modal" class="modal hidden">
         <div class="modal-content">
             <div class="modal-header">
@@ -21,11 +23,11 @@
         </div>
     </div>
 
+    <!-- LANDING SCREEN -->
     <section id="landing-screen" class="full-screen">
         <div class="upload-box horizontal-layout">
             <div class="brand-section">
-                <!-- Tooltip en Título -->
-                <div class="header-note" data-note="Analizador local: Procesa archivos JSON de Wireshark para detectar latencia y errores sin subir datos a la nube.">
+                <div class="note-box" data-note="Analizador local: Detecta latencia y errores sin subir datos a la nube.">
                     <h1 class="neon-title">TSHOOT <span class="neon-text-green">TOOL</span></h1>
                 </div>
                 <p class="subtitle">ADVANCED NETWORK FORENSICS v2.5</p>
@@ -47,6 +49,7 @@
         </div>
     </section>
 
+    <!-- MAIN DASHBOARD -->
     <section id="main-dashboard" class="hidden">
         <header class="cyber-header">
             <div class="logo-area"><span class="logo-text">TSHOOT <span class="neon-text-green">TOOL</span></span></div>
@@ -90,13 +93,13 @@
 
             <main class="content">
                 <div class="charts-row">
-                    <div class="chart-box header-note" data-note="Distribución de los protocolos detectados en la captura.">
+                    <div class="chart-box note-box" data-note="Distribución de protocolos (TCP, UDP, TLS).">
                         <canvas id="chart-protocols"></canvas>
                     </div>
-                    <div class="chart-box header-note" data-note="Puertos de destino con mayor actividad.">
+                    <div class="chart-box note-box" data-note="Puertos de destino más solicitados.">
                         <canvas id="chart-ports"></canvas>
                     </div>
-                    <div class="chart-box header-note" data-note="IPs con mayor consumo de ancho de banda.">
+                    <div class="chart-box note-box" data-note="IPs con mayor volumen de datos transmitidos.">
                         <canvas id="chart-talkers"></canvas>
                     </div>
                 </div>
@@ -105,15 +108,15 @@
                     <table id="traffic-table">
                         <thead>
                             <tr>
-                                <th class="col-delta"><span class="header-note" data-note="Tiempo entre este paquete y el anterior.">Delta</span></th>
-                                <th class="col-ip"><span class="header-note" data-note="IP que originó el paquete.">Source IP</span></th>
-                                <th class="col-ip"><span class="header-note" data-note="IP que recibió el paquete.">Destination IP</span></th>
-                                <th class="col-domain"><span class="header-note" data-note="Nombre del sitio (vía HTTP Host o TLS SNI).">Domain / Host</span></th>
-                                <th class="col-ttl"><span class="header-note" data-note="TTL: Saltos restantes de vida del paquete.">TTL</span></th>
-                                <th class="col-win"><span class="header-note" data-note="Tamaño de la ventana del receptor (Buffer).">Win</span></th>
-                                <th class="col-flags"><span class="header-note" data-note="Flags TCP (SYN, ACK, RST, FIN).">Flags</span></th>
-                                <th class="col-port"><span class="header-note" data-note="Puerto de servicio destino.">Port</span></th>
-                                <th class="col-status"><span class="header-note" data-note="Estado del paquete: Normal o Error.">Status</span></th>
+                                <th class="col-delta"><div class="note-box" data-note="Tiempo desde el paquete anterior.">Delta</div></th>
+                                <th class="col-ip"><div class="note-box" data-note="IP de origen del tráfico.">Source IP</div></th>
+                                <th class="col-ip"><div class="note-box" data-note="IP de destino del tráfico.">Destination IP</div></th>
+                                <th class="col-domain"><div class="note-box" data-note="Dominio (vía HTTP Host o TLS SNI).">Domain / Host</div></th>
+                                <th class="col-ttl"><div class="note-box" data-note="TTL: Tiempo de vida del paquete.">TTL</div></th>
+                                <th class="col-win"><div class="note-box" data-note="Window Size: Espacio en buffer.">Win</div></th>
+                                <th class="col-flags"><div class="note-box" data-note="Flags de control TCP.">Flags</div></th>
+                                <th class="col-port"><div class="note-box" data-note="Puerto de comunicación.">Port</div></th>
+                                <th class="col-status"><div class="note-box" data-note="Estado del análisis forense.">Status</div></th>
                             </tr>
                         </thead>
                         <tbody id="table-body"></tbody>
