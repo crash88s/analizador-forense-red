@@ -77,40 +77,47 @@ function processData(json) {
             if (f["tcp.flags.ack"] == "1") flags.push("ACK");
         }
 
-        // Diagnóstico Avanzado
+        // --- Extracción de Datos Corregida ---
         let level = "normal";
         let status = "OK";
-        const winSize = tcp["tcp.window_size_value"] || "N/A";
-        const ttl = ip["ip.ttl"] || "N/A";
         
-        // Extraer Dominio (SNI de TLS o Host de HTTP)
+        // TTL: Busca en IPv4 o IPv6 (Hop Limit)
+        const ttl = ip["ip.ttl"] || ip["ipv6.hlim"] || "---";
+        
+        // Window Size
+        const winSize = tcp["tcp.window_size_value"] || "---";
+        
+        // Dominio (SNI o Host)
         let domain = "---";
         if (http["http.host"]) domain = http["http.host"];
-        else if (tls["tls.handshake.extensions_server_name"]) domain = tls["tls.handshake.extensions_server_name"];
+        else if (tls["tls.handshake"] && tls["tls.handshake"]["tls.handshake.extensions_server_name"]) {
+            domain = tls["tls.handshake"]["tls.handshake.extensions_server_name"];
+        }
 
+        // Análisis de Errores
         if (tcp["tcp.analysis.retransmission"] || tcp["tcp.analysis.duplicate_ack"]) {
             level = "warning";
             status = "Retransmission";
         }
-        if (winSize !== "N/A" && parseInt(winSize) === 0) {
+        if (winSize !== "---" && parseInt(winSize) === 0) {
             level = "critical";
-            status = "Zero Window (Critical)";
+            status = "Zero Window";
         }
         if (flags.includes("RST") || (http["http.response.code"] >= 400)) {
             level = "critical";
-            status = status === "OK" ? "Reset / Error" : status;
+            status = (status === "OK") ? "Error/Reset" : status;
         }
 
         return {
             delta: parseFloat(l.frame["frame.time_delta"] || 0).toFixed(4),
-            src: ip["ip.src"] || "N/A",
-            dst: ip["ip.dst"] || "N/A",
+            src: ip["ip.src"] || ip["ipv6.src"] || "N/A",
+            dst: ip["ip.dst"] || ip["ipv6.dst"] || "N/A",
             domain: domain,
             ttl: ttl,
             win: winSize,
             proto: l.frame["frame.protocols"].split(':').pop().toUpperCase(),
             port: tcp["tcp.dstport"] || udp["udp.dstport"] || "N/A",
-            flags: flags.join(','),
+            flags: flags.join(',') || "---",
             level: level,
             status: status
         };
@@ -129,11 +136,13 @@ function applyFilters() {
     const flagInput = document.getElementById('filter-flags').value.toUpperCase();
 
     filteredData = rawData.filter(p => {
-        return (srcInput === "" || p.src.toLowerCase().includes(srcInput)) &&
-               (dstInput === "" || p.dst.toLowerCase().includes(dstInput)) &&
-               (protoSelect === "all" || p.proto === protoSelect) &&
-               (flagInput === "" || p.flags.includes(flagInput)) &&
-               (!showOnlyErrors || p.level !== "normal");
+        const matchSrc = (srcInput === "" || p.src.toLowerCase().includes(srcInput));
+        const matchDst = (dstInput === "" || p.dst.toLowerCase().includes(dstInput));
+        const matchProto = (protoSelect === "all" || p.proto === protoSelect);
+        const matchFlags = (flagInput === "" || p.flags.includes(flagInput));
+        const matchError = (!showOnlyErrors || p.level !== "normal");
+
+        return matchSrc && matchDst && matchProto && matchFlags && matchError;
     });
     updateUI();
 }
@@ -151,9 +160,12 @@ document.getElementById('btn-clear').onclick = () => {
 function updateUI() {
     const tbody = document.getElementById('table-body');
     tbody.innerHTML = '';
+    
     filteredData.slice(0, 300).forEach(p => {
         const tr = document.createElement('tr');
         tr.className = `row-${p.level}`;
+        
+        // --- AQUÍ ESTÁ LA CORRECCIÓN CLAVE: 9 CELDAS PARA 9 CABECERAS ---
         tr.innerHTML = `
             <td>${p.delta} s</td>
             <td>${p.src}</td>
@@ -161,12 +173,13 @@ function updateUI() {
             <td style="color:var(--neon-blue)">${p.domain}</td>
             <td>${p.ttl}</td>
             <td>${p.win}</td>
-            <td>${p.flags || '---'}</td>
+            <td>${p.flags}</td>
             <td>${p.port}</td>
             <td>${p.status}</td>
         `;
         tbody.appendChild(tr);
     });
+    
     document.getElementById('stat-packets').innerText = filteredData.length.toLocaleString();
     document.getElementById('stat-alerts').innerText = filteredData.filter(p => p.level === 'critical').length;
     document.getElementById('stat-ips').innerText = [...new Set(filteredData.map(p => p.src))].length;
@@ -193,19 +206,22 @@ document.getElementById('filter-src-ip').oninput = applyFilters;
 document.getElementById('filter-dst-ip').oninput = applyFilters;
 document.getElementById('filter-proto').onchange = applyFilters;
 document.getElementById('filter-flags').oninput = applyFilters;
+
 document.getElementById('btn-only-errors').onclick = function() {
     showOnlyErrors = !showOnlyErrors;
     this.classList.toggle('active');
     applyFilters();
 };
+
 document.getElementById('btn-reset').onclick = () => location.reload();
+
 document.getElementById('export-pdf').onclick = () => {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF('l', 'mm', 'a4');
     doc.text("Network Forensic Report - Selvin Mejia", 14, 15);
     doc.autoTable({ 
-        head: [['Delta', 'Source', 'Destination', 'Domain', 'TTL', 'Win', 'Port', 'Status']], 
-        body: filteredData.slice(0, 50).map(p => [p.delta, p.src, p.dst, p.domain, p.ttl, p.win, p.port, p.status]),
+        head: [['Delta', 'Source', 'Destination', 'Domain', 'TTL', 'Win', 'Flags', 'Port', 'Status']], 
+        body: filteredData.slice(0, 50).map(p => [p.delta, p.src, p.dst, p.domain, p.ttl, p.win, p.flags, p.port, p.status]),
         startY: 25 
     });
     doc.save('Tshoot_Report_Pro.pdf');
