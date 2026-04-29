@@ -3,43 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tshoot Tool | Forensic Analyzer</title>
+    <title>Tshoot Tool | By Selvin Mejia</title>
     <link rel="stylesheet" href="styles.css">
+    <!-- Librerías Externas -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 </head>
 <body class="dark-mode">
 
-    <!-- SECCIÓN 1: LANDING / CARGA -->
+    <!-- PANTALLA DE CARGA (LANDING) -->
     <section id="landing-screen" class="full-screen">
         <div class="upload-box">
-            <h1 class="neon-text-blue">TSHOOT <span class="neon-text-green">TOOL</span></h1>
-            <p>Análisis Avanzado de Tráfico Wireshark</p>
+            <h1 class="neon-title">TSHOOT <span class="neon-text-green">TOOL</span></h1>
+            <p class="subtitle">ADVANCED NETWORK FORENSICS</p>
             
             <div class="drop-zone" id="drop-zone">
-                <div class="icon">📡</div>
-                <p>Arrastra el archivo JSON aquí o haz clic para buscar</p>
+                <div class="icon-upload">📡</div>
+                <p>Arrastra el JSON de Wireshark aquí o haz clic</p>
                 <input type="file" id="file-input" hidden accept=".json">
             </div>
 
             <div id="progress-container" class="hidden">
-                <div class="progress-bar">
-                    <div id="progress-fill"></div>
-                </div>
+                <div class="progress-bar"><div id="progress-fill"></div></div>
                 <p id="progress-text">Procesando paquetes...</p>
             </div>
-
-            <p class="credits-main">aplicacion realizada por <strong>Selvin Mejia</strong></p>
+            <p class="credits-main">Software developed by Selvin Mejia</p>
         </div>
     </section>
 
-    <!-- SECCIÓN 2: DASHBOARD -->
+    <!-- DASHBOARD PRINCIPAL -->
     <section id="main-dashboard" class="hidden">
         <header class="cyber-header">
-            <div class="logo">TSHOOT <span class="neon-text-green">TOOL</span></div>
+            <div class="logo-area">
+                <span class="logo-text">TSHOOT <span class="neon-text-green">TOOL</span></span>
+            </div>
             
-            <!-- Estadísticas mejoradas visualmente -->
             <div class="stats-grid">
                 <div class="stat-item">
                     <span class="stat-label">PACKETS</span>
@@ -55,7 +54,7 @@
                 </div>
             </div>
 
-            <div class="actions">
+            <div class="header-actions">
                 <button id="btn-only-errors" class="btn-warn">ERRORES</button>
                 <button id="btn-reset" class="btn-neon-blue">NUEVO ARCHIVO</button>
             </div>
@@ -63,50 +62,57 @@
 
         <div class="app-container">
             <aside class="sidebar">
-                <h3>FILTROS</h3>
-                <div class="filter-group">
-                    <label>IP Origen</label>
-                    <input type="text" id="filter-src-ip" placeholder="0.0.0.0">
+                <div class="sidebar-top">
+                    <h3 class="filter-title">FILTROS FORENSES</h3>
+                    <div class="filter-group">
+                        <label>IP Origen</label>
+                        <input type="text" id="filter-src-ip" placeholder="0.0.0.0">
+                    </div>
+                    <div class="filter-group">
+                        <label>IP Destino</label>
+                        <input type="text" id="filter-dst-ip" placeholder="0.0.0.0">
+                    </div>
+                    <div class="filter-group">
+                        <label>Protocolo</label>
+                        <select id="filter-proto"></select>
+                    </div>
+                    <div class="filter-group">
+                        <label>TCP Flags</label>
+                        <input type="text" id="filter-flags" placeholder="SYN, RST, ACK...">
+                    </div>
+                    <button id="export-pdf" class="btn-neon-green">EXPORTAR REPORTE PDF</button>
                 </div>
-                <div class="filter-group">
-                    <label>IP Destino</label>
-                    <input type="text" id="filter-dst-ip" placeholder="0.0.0.0">
+                
+                <div class="sidebar-bottom">
+                    <p class="credits-neon">By Selvin Mejia</p>
                 </div>
-                <div class="filter-group">
-                    <label>Protocolo</label>
-                    <select id="filter-proto"></select>
-                </div>
-                <div class="filter-group">
-                    <label>Flag TCP</label>
-                    <input type="text" id="filter-flags" placeholder="SYN, RST...">
-                </div>
-                <button id="export-pdf" class="btn-neon-green" style="width: 100%; margin-top: 20px;">EXPORTAR PDF</button>
-                <p class="credits-sidebar">By Selvin Mejia</p>
             </aside>
 
             <main class="content">
-                <div class="charts-grid">
-                    <div class="chart-container">
+                <div class="charts-row">
+                    <div class="chart-box">
                         <canvas id="chart-protocols"></canvas>
                     </div>
-                    <div class="chart-container">
+                    <div class="chart-box">
                         <canvas id="chart-ports"></canvas>
                     </div>
                 </div>
 
-                <div class="table-container">
+                <div class="table-wrapper">
                     <table id="traffic-table">
                         <thead>
                             <tr>
-                                <th>Delta (s)</th>
-                                <th>Origen</th>
-                                <th>Destino</th>
+                                <th>Delta Time</th>
+                                <th>Source IP</th>
+                                <th>Destination IP</th>
                                 <th>Flags</th>
-                                <th>Puerto</th>
-                                <th>Status/Análisis</th>
+                                <th>Port</th>
+                                <th>Status Analysis</th>
                             </tr>
                         </thead>
-                        <tbody id="table-body"></tbody>
+                        <tbody id="table-body">
+                            <!-- Datos inyectados por JS -->
+                        </tbody>
                     </table>
                 </div>
             </main>
