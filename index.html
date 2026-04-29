@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Network Forensic & Tshoot Tool</title>
+    <title>SOC Forensic & Tshoot Tool</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -11,39 +11,47 @@
 </head>
 <body class="dark-mode">
     <header class="cyber-header">
-        <div class="logo"><span class="neon-text">TSHOOT</span> ANALYZER</div>
+        <div class="logo">
+            <span class="neon-text">SOC</span> <span class="neon-text-blue">ANALYZER</span>
+        </div>
         <div class="stats-container">
             <div class="stat-card">Packets: <span id="stat-packets">0</span></div>
-            <div class="stat-card">Throughput: <span id="stat-throughput">0 Mbps</span></div>
-            <div class="stat-card">Errors: <span id="stat-alerts" class="text-danger">0</span></div>
+            <div class="stat-card">Throughput: <span id="stat-throughput">0.00 Mbps</span></div>
+            <div class="stat-card">Errors/RST: <span id="stat-alerts" class="text-danger">0</span></div>
         </div>
         <div class="actions">
-            <button id="btn-only-errors" class="btn-warn">SOLO ERRORES</button>
-            <button id="export-pdf" class="btn-neon">REPORT PDF</button>
+            <button id="btn-only-errors" class="btn-warn">FILTRAR ERRORES</button>
+            <button id="export-pdf" class="btn-neon">EXPORT PDF</button>
         </div>
     </header>
 
     <div class="app-container">
         <aside class="sidebar">
-            <h3>FILTROS DE RED</h3>
+            <h3>FILTROS FORENSES</h3>
             <div class="filter-group">
-                <label>IP Origen/Destino</label>
-                <input type="text" id="filter-ip" placeholder="Filtrar IP...">
+                <label>IP Origen</label>
+                <input type="text" id="filter-src-ip" placeholder="Ej: 192.168.1.1">
+            </div>
+            <div class="filter-group">
+                <label>IP Destino</label>
+                <input type="text" id="filter-dst-ip" placeholder="Ej: 8.8.8.8">
             </div>
             <div class="filter-group">
                 <label>Protocolo</label>
-                <select id="filter-proto"><option value="all">Todos</option></select>
+                <select id="filter-proto">
+                    <option value="all">Todos</option>
+                </select>
             </div>
             <div class="filter-group">
                 <label>Flags TCP</label>
-                <input type="text" id="filter-flags" placeholder="SYN, RST, etc.">
+                <input type="text" id="filter-flags" placeholder="SYN, RST, ACK...">
             </div>
             
             <div class="drop-zone" id="drop-zone">
                 Arrastra JSON de Wireshark aquí
                 <input type="file" id="file-input" hidden accept=".json">
             </div>
-            <p class="credits">aplicacion realizada por Selvin Mejia</p>
+            <p class="credits">aplicacion realizada por <strong>Selvin Mejia</strong></p>
         </aside>
 
         <main class="content">
@@ -60,12 +68,12 @@
                 <table id="traffic-table">
                     <thead>
                         <tr>
-                            <th>Delta (s)</th>
+                            <th>Delta Time</th>
                             <th>Origen</th>
                             <th>Destino</th>
                             <th>Flags</th>
                             <th>Size</th>
-                            <th>Status/Info</th>
+                            <th>Status/HTTP</th>
                             <th>Análisis Tshoot</th>
                         </tr>
                     </thead>
