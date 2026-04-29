@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tshoot Tool Pro | By Selvin Mejia</title>
     <link rel="stylesheet" href="styles.css">
-    <!-- External Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
@@ -31,18 +30,21 @@
             <div class="brand-section">
                 <h1 class="neon-title">TSHOOT <span class="neon-text-green">TOOL</span></h1>
                 <p class="subtitle">ADVANCED NETWORK FORENSICS v2.5</p>
-                <p class="credits-neon-main">Software developed by <span>Selvin Mejia</span></p>
+                <div class="brand-credits">
+                    <p class="credits-label">SOFTWARE DEVELOPED BY</p>
+                    <p class="credits-name">SELVIN MEJIA</p>
+                </div>
             </div>
             
             <div class="upload-zone" id="upload-zone">
-                <div class="icon-upload">📡</div>
-                <p class="main-instruction">Please upload your Wireshark JSON file</p>
+                <div class="icon-forensic">🔍</div>
+                <p class="main-instruction">Load Wireshark JSON Capture</p>
                 <p class="sub-instruction"><span>Click here to browse</span></p>
                 <input type="file" id="file-input" hidden accept=".json">
                 
                 <div id="progress-container" class="hidden">
                     <div class="progress-bar"><div id="progress-fill"></div></div>
-                    <p id="progress-text">Processing packets...</p>
+                    <p id="progress-text">Analyzing frames...</p>
                 </div>
             </div>
         </div>
@@ -55,22 +57,23 @@
                 <span class="logo-text">TSHOOT <span class="neon-text-green">TOOL</span></span>
             </div>
             
-            <div class="stats-grid">
-                <div class="stat-item">
-                    <span class="stat-label">PACKETS</span>
-                    <span id="stat-packets" class="stat-value">0</span>
+            <!-- RESTORED STATS BAR STYLE -->
+            <div class="stats-pill-container">
+                <div class="stat-pill-item">
+                    <span class="stat-pill-label">PACKETS</span>
+                    <span id="stat-packets" class="stat-pill-value">0</span>
                 </div>
-                <div class="stat-item">
-                    <span class="stat-label">RESETS (RST)</span>
-                    <span id="stat-resets" class="stat-value text-danger">0</span>
+                <div class="stat-pill-item">
+                    <span class="stat-pill-label">RESETS (RST)</span>
+                    <span id="stat-resets" class="stat-pill-value text-danger">0</span>
                 </div>
-                <div class="stat-item">
-                    <span class="stat-label">RETRANSMISSIONS</span>
-                    <span id="stat-retrans" class="stat-value text-warning">0</span>
+                <div class="stat-pill-item">
+                    <span class="stat-label-mini">RETRANS.</span>
+                    <span id="stat-retrans" class="stat-pill-value text-warning">0</span>
                 </div>
-                <div class="stat-item">
-                    <span class="stat-label">UNIQUE IPs</span>
-                    <span id="stat-ips" class="stat-value text-blue">0</span>
+                <div class="stat-pill-item">
+                    <span class="stat-pill-label">UNIQUE IPs</span>
+                    <span id="stat-ips" class="stat-pill-value text-blue">0</span>
                 </div>
             </div>
 
@@ -106,7 +109,10 @@
                 
                 <div class="sidebar-bottom">
                     <button id="btn-reset" class="btn-neon-blue-sidebar">NEW FILE</button>
-                    <p class="credits-neon-sidebar">By Selvin Mejia</p>
+                    <div class="sidebar-signature">
+                        <p class="sig-by">BY</p>
+                        <p class="sig-name">SELVIN MEJIA</p>
+                    </div>
                 </div>
             </aside>
 
@@ -131,10 +137,10 @@
                                 <th class="col-ip">Source IP</th>
                                 <th class="col-ip">Destination IP</th>
                                 <th class="col-domain">Domain / Host</th>
-                                <th class="col-small">TTL</th>
-                                <th class="col-small">Win</th>
+                                <th class="col-ttl">TTL</th>
+                                <th class="col-win">Win</th>
                                 <th class="col-flags">Flags</th>
-                                <th class="col-small">Port</th>
+                                <th class="col-port">Port</th>
                                 <th class="col-status">Status</th>
                             </tr>
                         </thead>
