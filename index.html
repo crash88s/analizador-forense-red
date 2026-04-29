@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tshoot Tool Pro | By Selvin Mejia</title>
     <link rel="stylesheet" href="styles.css">
-    <!-- External Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
@@ -29,8 +28,7 @@
     <section id="landing-screen" class="full-screen">
         <div class="upload-box horizontal-layout">
             <div class="brand-section">
-                <!-- TOOLTIP EN TÍTULO PRINCIPAL -->
-                <div class="tooltip-wrapper" data-tooltip="Analizador de red local. Procesa archivos JSON de Wireshark para detectar latencia, retransmisiones y errores de protocolos sin subir datos a la nube.">
+                <div class="tooltip-wrapper" data-tooltip="Analizador de red local. Procesa archivos JSON de Wireshark para detectar latencia, retransmisiones y errores sin subir datos a la nube.">
                     <h1 class="neon-title">TSHOOT <span class="neon-text-green">TOOL</span></h1>
                 </div>
                 <p class="subtitle">ADVANCED NETWORK FORENSICS v2.5</p>
@@ -39,13 +37,11 @@
                     <p class="credits-name">SELVIN MEJIA</p>
                 </div>
             </div>
-            
             <div class="upload-zone" id="upload-zone">
                 <div class="icon-forensic">🔍</div>
                 <p class="main-instruction">Load Wireshark JSON Capture</p>
                 <p class="sub-instruction"><span>Click here to browse</span></p>
                 <input type="file" id="file-input" hidden accept=".json">
-                
                 <div id="progress-container" class="hidden">
                     <div class="progress-bar"><div id="progress-fill"></div></div>
                     <p id="progress-text">Analyzing frames...</p>
@@ -57,10 +53,7 @@
     <!-- MAIN DASHBOARD -->
     <section id="main-dashboard" class="hidden">
         <header class="cyber-header">
-            <div class="logo-area">
-                <span class="logo-text">TSHOOT <span class="neon-text-green">TOOL</span></span>
-            </div>
-            
+            <div class="logo-area"><span class="logo-text">TSHOOT <span class="neon-text-green">TOOL</span></span></div>
             <div class="stats-pill-container">
                 <div class="stat-pill-item">
                     <span class="stat-pill-label">PACKETS</span>
@@ -79,7 +72,6 @@
                     <span id="stat-ips" class="stat-pill-value text-blue">0</span>
                 </div>
             </div>
-
             <div class="header-actions">
                 <button id="export-pdf" class="btn-neon-green">EXPORT PDF REPORT</button>
             </div>
@@ -89,27 +81,13 @@
             <aside class="sidebar">
                 <div class="sidebar-top">
                     <h3 class="filter-title">FORENSIC FILTERS</h3>
-                    <div class="filter-group">
-                        <label>Source IP</label>
-                        <input type="text" id="filter-src-ip" placeholder="0.0.0.0">
-                    </div>
-                    <div class="filter-group">
-                        <label>Destination IP</label>
-                        <input type="text" id="filter-dst-ip" placeholder="0.0.0.0">
-                    </div>
-                    <div class="filter-group">
-                        <label>Protocol</label>
-                        <select id="filter-proto"></select>
-                    </div>
-                    <div class="filter-group">
-                        <label>TCP Flags</label>
-                        <input type="text" id="filter-flags" placeholder="SYN, RST, ACK...">
-                    </div>
-                    
+                    <div class="filter-group"><label>Source IP</label><input type="text" id="filter-src-ip" placeholder="0.0.0.0"></div>
+                    <div class="filter-group"><label>Destination IP</label><input type="text" id="filter-dst-ip" placeholder="0.0.0.0"></div>
+                    <div class="filter-group"><label>Protocol</label><select id="filter-proto"></select></div>
+                    <div class="filter-group"><label>TCP Flags</label><input type="text" id="filter-flags" placeholder="SYN, RST, ACK..."></div>
                     <button id="btn-only-errors" class="btn-warn">ERRORS ONLY</button>
                     <button id="btn-clear" class="btn-clear">CLEAR FILTERS</button>
                 </div>
-                
                 <div class="sidebar-bottom">
                     <button id="btn-reset" class="btn-neon-blue-sidebar">NEW FILE</button>
                     <div class="sidebar-signature">
@@ -121,15 +99,13 @@
 
             <main class="content">
                 <div class="charts-row">
-                    <!-- TOOLTIP EN GRÁFICO 1 -->
-                    <div class="chart-box tooltip-wrapper" data-tooltip="Muestra el porcentaje de protocolos detectados en la captura.">
+                    <div class="chart-box tooltip-wrapper" data-tooltip="Porcentaje de protocolos detectados (TCP, UDP, TLS, etc).">
                         <canvas id="chart-protocols"></canvas>
                     </div>
-                    <!-- TOOLTIP EN GRÁFICO 2 -->
-                    <div class="chart-box tooltip-wrapper" data-tooltip="Identifica los puertos con mayor actividad para detectar servicios críticos o escaneos.">
+                    <div class="chart-box tooltip-wrapper" data-tooltip="Puertos de destino más activos. Útil para identificar servicios.">
                         <canvas id="chart-ports"></canvas>
                     </div>
-                    <div class="chart-box">
+                    <div class="chart-box tooltip-wrapper" data-tooltip="IPs de origen que generan mayor volumen de tráfico en Bytes.">
                         <canvas id="chart-talkers"></canvas>
                     </div>
                 </div>
@@ -138,15 +114,15 @@
                     <table id="traffic-table">
                         <thead>
                             <tr>
-                                <th class="col-delta">Delta</th>
-                                <th class="col-ip">Source IP</th>
-                                <th class="col-ip">Destination IP</th>
-                                <th class="col-domain">Domain / Host</th>
-                                <th class="col-ttl">TTL</th>
-                                <th class="col-win">Win</th>
-                                <th class="col-flags">Flags</th>
-                                <th class="col-port">Port</th>
-                                <th class="col-status">Status</th>
+                                <th class="col-delta tooltip-wrapper" data-tooltip="Tiempo transcurrido desde el paquete anterior.">Delta</th>
+                                <th class="col-ip tooltip-wrapper" data-tooltip="Dirección IP de quien envía el paquete.">Source IP</th>
+                                <th class="col-ip tooltip-wrapper" data-tooltip="Dirección IP de quien recibe el paquete.">Destination IP</th>
+                                <th class="col-domain tooltip-wrapper" data-tooltip="Nombre de dominio extraído via HTTP Host o TLS SNI.">Domain / Host</th>
+                                <th class="col-ttl tooltip-wrapper" data-tooltip="Time To Live: Saltos restantes antes de expirar.">TTL</th>
+                                <th class="col-win tooltip-wrapper" data-tooltip="TCP Window Size: Capacidad del búfer del receptor.">Win</th>
+                                <th class="col-flags tooltip-wrapper" data-tooltip="Indicadores de control TCP (SYN, ACK, RST, FIN).">Flags</th>
+                                <th class="col-port tooltip-wrapper" data-tooltip="Puerto de servicio utilizado en la comunicación.">Port</th>
+                                <th class="col-status tooltip-wrapper" data-tooltip="Clasificación del paquete: Normal, Retransmisión o Error Crítico.">Status</th>
                             </tr>
                         </thead>
                         <tbody id="table-body"></tbody>
@@ -155,7 +131,6 @@
             </main>
         </div>
     </section>
-
     <script src="analyzer.js"></script>
 </body>
 </html>
