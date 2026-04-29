@@ -36,14 +36,19 @@
             </div>
             
             <div class="upload-zone" id="upload-zone">
-                <div class="icon-forensic">🔍</div>
-                <p class="main-instruction">Load Wireshark JSON Capture</p>
-                <p class="sub-instruction"><span class="neon-green-link">Click here to browse</span></p>
-                <input type="file" id="file-input" hidden accept=".json">
+                <div id="upload-content">
+                    <div class="icon-forensic">🔍</div>
+                    <p class="main-instruction">Load Wireshark JSON Capture</p>
+                    <p class="sub-instruction"><span class="neon-green-link">Click here to browse</span></p>
+                    <input type="file" id="file-input" hidden accept=".json">
+                </div>
                 
+                <!-- PROGRESS BAR RESTORED & IMPROVED -->
                 <div id="progress-container" class="hidden">
-                    <div class="progress-bar"><div id="progress-fill"></div></div>
-                    <p id="progress-text">Analyzing frames...</p>
+                    <p id="progress-text">CYBER SCAN IN PROGRESS...</p>
+                    <div class="progress-bar">
+                        <div id="progress-fill"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -70,10 +75,7 @@
                     <h3 class="filter-title">FORENSIC FILTERS</h3>
                     <div class="filter-group"><label>Source IP</label><input type="text" id="filter-src-ip" placeholder="0.0.0.0"></div>
                     <div class="filter-group"><label>Destination IP</label><input type="text" id="filter-dst-ip" placeholder="0.0.0.0"></div>
-                    <div class="filter-group">
-                        <label>Protocol</label>
-                        <select id="filter-proto"></select>
-                    </div>
+                    <div class="filter-group"><label>Protocol</label><select id="filter-proto"></select></div>
                     <div class="filter-group"><label>TCP Flags</label><input type="text" id="filter-flags" placeholder="SYN, RST, ACK..."></div>
                     
                     <button id="btn-only-errors" class="btn-warn">ERRORS ONLY</button>
@@ -101,14 +103,14 @@
                         <thead>
                             <tr>
                                 <th class="col-delta"><span class="th-note" data-note="Time between frames.">Delta</span></th>
-                                <th class="col-ip"><span class="th-note" data-note="Origin IP address.">Source IP</span></th>
-                                <th class="col-ip"><span class="th-note" data-note="Destination IP address.">Destination IP</span></th>
-                                <th class="col-domain"><span class="th-note" data-note="Domain via HTTP Host / TLS SNI.">Domain / Host</span></th>
-                                <th class="col-ttl"><span class="th-note" data-note="Time To Live (Hops).">TTL</span></th>
-                                <th class="col-win"><span class="th-note" data-note="TCP Window size (Buffer).">Win</span></th>
+                                <th class="col-ip"><span class="th-note" data-note="Origin IP.">Source IP</span></th>
+                                <th class="col-ip"><span class="th-note" data-note="Destination IP.">Destination IP</span></th>
+                                <th class="col-domain"><span class="th-note" data-note="Domain (HTTP/TLS).">Domain / Host</span></th>
+                                <th class="col-ttl"><span class="th-note" data-note="Time To Live.">TTL</span></th>
+                                <th class="col-win"><span class="th-note" data-note="Window Size.">Win</span></th>
                                 <th class="col-flags"><span class="th-note" data-note="TCP Control Flags.">Flags</span></th>
-                                <th class="col-port"><span class="th-note" data-note="Service Destination Port.">Port</span></th>
-                                <th class="col-status"><span class="th-note" data-note="Forensic Analysis Status.">Status</span></th>
+                                <th class="col-port"><span class="th-note" data-note="Destination Port.">Port</span></th>
+                                <th class="col-status"><span class="th-note" data-note="Packet Status.">Status</span></th>
                             </tr>
                         </thead>
                         <tbody id="table-body"></tbody>
