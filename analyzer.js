@@ -7,8 +7,8 @@ function initCharts() {
     const chartStyles = {
         responsive: true, maintainAspectRatio: false,
         plugins: { 
-            legend: { position: 'top', labels: { color: '#777', font: { size: 10 } } }, 
-            title: { display: true, color: '#fff', font: { size: 13 } } 
+            legend: { position: 'top', labels: { color: '#777', font: { size: 10 } } },
+            title: { display: true, color: '#fff', font: { size: 13 } }
         }
     };
     if (protoChart) protoChart.destroy();
@@ -18,23 +18,19 @@ function initCharts() {
     protoChart = new Chart(document.getElementById('chart-protocols'), {
         type: 'doughnut',
         data: { labels: [], datasets: [{ data: [], backgroundColor: ['#00f2ff', '#00ff41', '#f3ea5f', '#ff003c', '#9d00ff', '#ff8c00'] }] },
-        options: { ...chartStyles, plugins: { ...chartStyles.plugins, title: { ...chartStyles.plugins.title, text: 'Protocols Distribution' } } }
+        options: { ...chartStyles, plugins: { ...chartStyles.plugins, title: { text: 'Protocols Distribution' } } }
     });
 
     portsChart = new Chart(document.getElementById('chart-ports'), {
         type: 'pie',
         data: { labels: [], datasets: [{ data: [], backgroundColor: ['#00f2ff', '#00ff41', '#f3ea5f', '#ff003c', '#9d00ff', '#ff1493'] }] },
-        options: { ...chartStyles, plugins: { ...chartStyles.plugins, title: { ...chartStyles.plugins.title, text: 'Top Destination Ports' } } }
+        options: { ...chartStyles, plugins: { ...chartStyles.plugins, title: { text: 'Top Destination Ports' } } }
     });
 
     talkersChart = new Chart(document.getElementById('chart-talkers'), {
         type: 'bar',
         data: { labels: [], datasets: [{ label: 'Total Bytes', data: [], backgroundColor: '#00ff41' }] },
-        options: { 
-            ...chartStyles, 
-            plugins: { ...chartStyles.plugins, title: { ...chartStyles.plugins.title, text: 'Top Talkers (Bandwidth)' } },
-            scales: { y: { grid: { color: '#111' }, ticks: { color: '#444' } }, x: { grid: { display: false }, ticks: { color: '#444' } } }
-        }
+        options: { ...chartStyles, plugins: { ...chartStyles.plugins, title: { text: 'Top Talkers (Bandwidth)' } }, scales: { y: { grid: { color: '#111' }, ticks: { color: '#444' } }, x: { grid: { display: false }, ticks: { color: '#444' } } } }
     });
 }
 
@@ -84,7 +80,7 @@ function processData(json) {
         const isRetrans = !!tcp["tcp.analysis.retransmission"];
         const winSize = tcp["tcp.window_size_value"] || "---";
 
-        let level = (isReset || (winSize === "0")) ? "critical" : (isRetrans ? "warning" : "normal");
+        let level = (isReset || winSize === "0") ? "critical" : (isRetrans ? "warning" : "normal");
 
         return {
             delta: parseFloat(l.frame["frame.time_delta"] || 0).toFixed(4),
@@ -139,7 +135,10 @@ function updateUI() {
         const tr = document.createElement('tr');
         tr.className = `row-${p.level}`;
         tr.innerHTML = `<td class="col-delta">${p.delta} s</td><td class="col-ip">${p.src}</td><td class="col-ip">${p.dst}</td><td class="col-domain" style="color:var(--neon-blue)">${p.domain}</td><td class="col-ttl">${p.ttl}</td><td class="col-win">${p.win}</td><td class="col-flags">${p.flags}</td><td class="col-port">${p.port}</td><td class="col-status">${p.level.toUpperCase()}</td>`;
-        tr.onclick = () => { document.getElementById('json-display').innerText = JSON.stringify(p.original, null, 4); document.getElementById('packet-modal').classList.remove('hidden'); };
+        tr.onclick = () => { 
+            document.getElementById('json-display').innerText = JSON.stringify(p.original, null, 4); 
+            document.getElementById('packet-modal').classList.remove('hidden'); 
+        };
         tbody.appendChild(tr);
     });
     document.getElementById('stat-packets').innerText = filteredData.length.toLocaleString();
