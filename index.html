@@ -3,21 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tshoot Tool | By Selvin Mejia</title>
+    <title>Tshoot Tool Pro | By Selvin Mejia</title>
     <link rel="stylesheet" href="styles.css">
-    <!-- External Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 </head>
 <body class="dark-mode">
 
-    <!-- LANDING SCREEN -->
     <section id="landing-screen" class="full-screen">
         <div class="upload-box horizontal-layout">
             <div class="brand-section">
                 <h1 class="neon-title">TSHOOT <span class="neon-text-green">TOOL</span></h1>
-                <p class="subtitle">ADVANCED NETWORK FORENSICS</p>
+                <p class="subtitle">ADVANCED NETWORK FORENSICS v2.0</p>
                 <p class="credits-neon-main">Software developed by <span>Selvin Mejia</span></p>
             </div>
             
@@ -29,13 +27,12 @@
                 
                 <div id="progress-container" class="hidden">
                     <div class="progress-bar"><div id="progress-fill"></div></div>
-                    <p id="progress-text">Processing packets...</p>
+                    <p id="progress-text">Deep packet inspection...</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- MAIN DASHBOARD -->
     <section id="main-dashboard" class="hidden">
         <header class="cyber-header">
             <div class="logo-area">
@@ -88,7 +85,6 @@
                 </div>
                 
                 <div class="sidebar-bottom">
-                    <!-- NEW FILE button moved here -->
                     <button id="btn-reset" class="btn-neon-blue-sidebar">NEW FILE</button>
                     <p class="credits-neon-sidebar">By Selvin Mejia</p>
                 </div>
@@ -108,9 +104,12 @@
                     <table id="traffic-table">
                         <thead>
                             <tr>
-                                <th>Delta Time</th>
+                                <th>Delta</th>
                                 <th>Source IP</th>
                                 <th>Destination IP</th>
+                                <th>Domain / Host</th>
+                                <th>TTL</th>
+                                <th>Win Size</th>
                                 <th>Flags</th>
                                 <th>Port</th>
                                 <th>Status Analysis</th>
