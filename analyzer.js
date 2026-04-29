@@ -22,7 +22,6 @@ function initCharts() {
         options: { ...chartStyles, plugins: { ...chartStyles.plugins, title: { display: true, text: 'Protocols Distribution', color: '#fff' } } }
     });
 
-    // Ports Chart changed to Pie
     portsChart = new Chart(document.getElementById('chart-ports'), {
         type: 'pie',
         data: { labels: [], datasets: [{ data: [], backgroundColor: ['#00f2ff', '#00ff41', '#f3ea5f', '#ff003c', '#9d00ff', '#ff8c00', '#00ced1', '#ff1493'] }] },
@@ -111,7 +110,6 @@ function processData(json) {
         };
     });
 
-    // Populate Protocol Select
     const protos = [...new Set(rawData.map(p => p.proto))];
     const select = document.getElementById('filter-proto');
     select.innerHTML = '<option value="all">All Protocols</option>';
@@ -143,7 +141,6 @@ function updateUI() {
     const tbody = document.getElementById('table-body');
     tbody.innerHTML = '';
     
-    // Render first 300 for performance
     filteredData.slice(0, 300).forEach(p => {
         const tr = document.createElement('tr');
         tr.className = `row-${p.level}`;
@@ -158,7 +155,6 @@ function updateUI() {
         tbody.appendChild(tr);
     });
 
-    // Update KPIs
     document.getElementById('stat-packets').innerText = filteredData.length.toLocaleString();
     document.getElementById('stat-alerts').innerText = filteredData.filter(p => p.level === 'critical').length;
     document.getElementById('stat-ips').innerText = [...new Set(filteredData.map(p => p.src))].length;
@@ -169,14 +165,12 @@ function updateUI() {
 function updateCharts() {
     if (!protoChart || !portsChart) return;
 
-    // Protocols
     const pMap = {};
     filteredData.forEach(p => pMap[p.proto] = (pMap[p.proto] || 0) + 1);
     protoChart.data.labels = Object.keys(pMap);
     protoChart.data.datasets[0].data = Object.values(pMap);
     protoChart.update();
 
-    // Ports (Pie)
     const ptMap = {};
     filteredData.filter(p => p.port !== "N/A").forEach(p => ptMap[p.port] = (ptMap[p.port] || 0) + 1);
     const topPorts = Object.entries(ptMap).sort((a,b) => b[1]-a[1]).slice(0, 8);
