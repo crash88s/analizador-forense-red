@@ -38,8 +38,9 @@
             <div class="upload-zone" id="upload-zone">
                 <div class="icon-forensic">🔍</div>
                 <p class="main-instruction">Load Wireshark JSON Capture</p>
-                <p class="sub-instruction"><span>Click here to browse</span></p>
+                <p class="sub-instruction"><span class="neon-green-link">Click here to browse</span></p>
                 <input type="file" id="file-input" hidden accept=".json">
+                
                 <div id="progress-container" class="hidden">
                     <div class="progress-bar"><div id="progress-fill"></div></div>
                     <p id="progress-text">Analyzing frames...</p>
@@ -52,12 +53,26 @@
     <section id="main-dashboard" class="hidden">
         <header class="cyber-header">
             <div class="logo-area"><span class="logo-text">TSHOOT <span class="neon-text-green">TOOL</span></span></div>
+            
             <div class="stats-pill-container">
-                <div class="stat-pill-item"><span class="stat-pill-label">PACKETS</span><span id="stat-packets" class="stat-pill-value">0</span></div>
-                <div class="stat-pill-item"><span class="stat-pill-label">ERRORS</span><span id="stat-resets" class="stat-pill-value text-danger">0</span></div>
-                <div class="stat-pill-item"><span class="stat-pill-label">RETRANS.</span><span id="stat-retrans" class="stat-pill-value text-warning">0</span></div>
-                <div class="stat-pill-item"><span class="stat-pill-label">UNIQUE IPs</span><span id="stat-ips" class="stat-pill-value text-blue">0</span></div>
+                <div class="stat-pill-item">
+                    <span class="stat-pill-label">PACKETS</span>
+                    <span id="stat-packets" class="stat-pill-value">0</span>
+                </div>
+                <div class="stat-pill-item">
+                    <span class="stat-pill-label">ERRORS</span>
+                    <span id="stat-resets" class="stat-pill-value text-danger">0</span>
+                </div>
+                <div class="stat-pill-item">
+                    <span class="stat-pill-label">RETRANS.</span>
+                    <span id="stat-retrans" class="stat-pill-value text-warning">0</span>
+                </div>
+                <div class="stat-pill-item">
+                    <span class="stat-pill-label">UNIQUE IPs</span>
+                    <span id="stat-ips" class="stat-pill-value text-blue">0</span>
+                </div>
             </div>
+
             <div class="header-actions"><button id="export-pdf" class="btn-neon-green">EXPORT PDF REPORT</button></div>
         </header>
 
@@ -79,7 +94,10 @@
                 
                 <div class="sidebar-bottom">
                     <button id="btn-reset" class="btn-neon-blue-sidebar">NEW FILE</button>
-                    <div class="sidebar-signature"><p class="sig-by">BY</p><p class="sig-name">SELVIN MEJIA</p></div>
+                    <div class="sidebar-signature">
+                        <p class="sig-by">BY</p>
+                        <p class="sig-name">SELVIN MEJIA</p>
+                    </div>
                 </div>
             </aside>
 
