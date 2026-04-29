@@ -12,14 +12,24 @@
 </head>
 <body class="dark-mode">
 
-    <!-- PACKET DETAIL MODAL -->
+    <!-- PACKET DETAIL MODAL - REDESIGNED -->
     <div id="packet-modal" class="modal hidden">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 class="neon-text-blue">PACKET DEEP INSPECTION</h2>
+                <div class="header-title-box">
+                    <span class="terminal-dot red"></span>
+                    <span class="terminal-dot yellow"></span>
+                    <span class="terminal-dot green"></span>
+                    <h2 class="neon-text-blue">PACKET DEEP INSPECTION</h2>
+                </div>
                 <span class="close-modal">&times;</span>
             </div>
-            <div class="modal-body"><pre id="json-display"></pre></div>
+            <div class="modal-body">
+                <pre id="json-display"></pre>
+            </div>
+            <div class="modal-footer">
+                <p>HEX/JSON DECODER ACTIVE</p>
+            </div>
         </div>
     </div>
 
@@ -27,9 +37,8 @@
     <section id="landing-screen" class="full-screen">
         <div class="upload-box horizontal-layout">
             <div class="brand-section">
-                <!-- ANIMATED NEON TITLE -->
                 <h1 class="neon-title animated-neon">TSHOOT <span class="neon-text-green">TOOL</span></h1>
-                <p class="subtitle">ADVANCED NETWORK FORENSICS v1.0</p>
+                <p class="subtitle">ADVANCED NETWORK FORENSICS v2.5</p>
                 <div class="brand-credits">
                     <p class="credits-label">SOFTWARE DEVELOPED BY</p>
                     <p class="credits-name">SELVIN MEJIA</p>
@@ -114,7 +123,7 @@
                                 <th class="col-win"><span class="th-note" data-note="TCP Window size.">Win</span></th>
                                 <th class="col-flags"><span class="th-note" data-note="Control Flags.">Flags</span></th>
                                 <th class="col-port"><span class="th-note" data-note="Service Port.">Port</span></th>
-                                <th class="col-status"><span class="th-note" data-note="Forensic Status.">Status</span></th>
+                                <th class="col-status"><span class="th-note" data-note="Packet Status.">Status</span></th>
                             </tr>
                         </thead>
                         <tbody id="table-body"></tbody>
