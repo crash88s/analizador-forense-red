@@ -8,43 +8,33 @@ function initCharts() {
     const chartStyles = {
         responsive: true,
         maintainAspectRatio: false,
-        plugins: { legend: { position: 'top', labels: { color: '#aaa', font: { size: 10 } } } }
+        plugins: { 
+            legend: { position: 'top', labels: { color: '#aaa', font: { size: 10 } } },
+            title: { display: true, color: '#fff', font: { size: 14 } }
+        }
     };
+
+    if (protoChart) protoChart.destroy();
+    if (portsChart) portsChart.destroy();
 
     protoChart = new Chart(document.getElementById('chart-protocols'), {
         type: 'doughnut',
         data: { labels: [], datasets: [{ data: [], backgroundColor: ['#00f2ff', '#00ff41', '#f3ea5f', '#ff003c', '#9d00ff', '#ff8c00'] }] },
-        options: { ...chartStyles, plugins: { ...chartStyles.plugins, title: { display: true, text: 'Protocols Distribution', color: '#fff' } } }
+        options: { ...chartStyles, plugins: { ...chartStyles.plugins, title: { ...chartStyles.plugins.title, text: 'Protocols Distribution' } } }
     });
 
     portsChart = new Chart(document.getElementById('chart-ports'), {
         type: 'pie',
         data: { labels: [], datasets: [{ data: [], backgroundColor: ['#00f2ff', '#00ff41', '#f3ea5f', '#ff003c', '#9d00ff', '#ff8c00', '#ff1493'] }] },
-        options: { ...chartStyles, plugins: { ...chartStyles.plugins, title: { display: true, text: 'Top Destination Ports', color: '#fff' } } }
+        options: { ...chartStyles, plugins: { ...chartStyles.plugins, title: { ...chartStyles.plugins.title, text: 'Top Destination Ports' } } }
     });
 }
 
-// 2. Enhanced File Handling (Drag & Drop + Click)
-const dropZone = document.getElementById('drop-zone');
+// 2. File Handling (Click Only)
+const uploadZone = document.getElementById('upload-zone');
 const fileInput = document.getElementById('file-input');
 
-dropZone.onclick = () => fileInput.click();
-
-// Drag and Drop Logic
-['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-    dropZone.addEventListener(eventName, e => {
-        e.preventDefault();
-        e.stopPropagation();
-    }, false);
-});
-
-dropZone.addEventListener('dragover', () => dropZone.classList.add('dragover'));
-dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
-dropZone.addEventListener('drop', (e) => {
-    dropZone.classList.remove('dragover');
-    const file = e.dataTransfer.files[0];
-    handleFile(file);
-});
+uploadZone.onclick = () => fileInput.click();
 
 fileInput.onchange = (e) => handleFile(e.target.files[0]);
 
@@ -128,7 +118,7 @@ function processData(json) {
     protos.forEach(pr => select.innerHTML += `<option value="${pr}">${pr}</option>`);
 }
 
-// 4. Filtering
+// 4. Filtering Logic
 function applyFilters() {
     const srcInput = document.getElementById('filter-src-ip').value.toLowerCase();
     const dstInput = document.getElementById('filter-dst-ip').value.toLowerCase();
@@ -136,43 +126,54 @@ function applyFilters() {
     const flagInput = document.getElementById('filter-flags').value.toUpperCase();
 
     filteredData = rawData.filter(p => {
-        return (srcInput === "" || p.src.toLowerCase().includes(srcInput)) &&
-               (dstInput === "" || p.dst.toLowerCase().includes(dstInput)) &&
-               (protoSelect === "all" || p.proto === protoSelect) &&
-               (flagInput === "" || p.flags.includes(flagInput)) &&
-               (!showOnlyErrors || p.level !== "normal");
+        const matchSrc = (srcInput === "" || p.src.toLowerCase().includes(srcInput));
+        const matchDst = (dstInput === "" || p.dst.toLowerCase().includes(dstInput));
+        const matchProto = (protoSelect === "all" || p.proto === protoSelect);
+        const matchFlags = (flagInput === "" || p.flags.includes(flagInput));
+        const matchError = (!showOnlyErrors || p.level !== "normal");
+
+        return matchSrc && matchDst && matchProto && matchFlags && matchError;
     });
     updateUI();
 }
 
-// CLEAR FILTERS FUNCTION
+// CLEAR FILTERS (Fixed Logic)
 document.getElementById('btn-clear').onclick = () => {
+    // Reset all manual inputs
     document.getElementById('filter-src-ip').value = "";
     document.getElementById('filter-dst-ip').value = "";
     document.getElementById('filter-proto').value = "all";
     document.getElementById('filter-flags').value = "";
+    
+    // Reset Error toggle
     showOnlyErrors = false;
     document.getElementById('btn-only-errors').classList.remove('active');
+    
+    // Trigger Re-filtering
     applyFilters();
 };
 
 function updateUI() {
     const tbody = document.getElementById('table-body');
     tbody.innerHTML = '';
+    
     filteredData.slice(0, 300).forEach(p => {
         const tr = document.createElement('tr');
         tr.className = `row-${p.level}`;
         tr.innerHTML = `<td>${p.delta} s</td><td>${p.src}</td><td>${p.dst}</td><td>${p.flags || '---'}</td><td>${p.port}</td><td>${p.status}</td>`;
         tbody.appendChild(tr);
     });
+    
     document.getElementById('stat-packets').innerText = filteredData.length.toLocaleString();
     document.getElementById('stat-alerts').innerText = filteredData.filter(p => p.level === 'critical').length;
     document.getElementById('stat-ips').innerText = [...new Set(filteredData.map(p => p.src))].length;
+    
     updateCharts();
 }
 
 function updateCharts() {
     if (!protoChart || !portsChart) return;
+    
     const pMap = {};
     filteredData.forEach(p => pMap[p.proto] = (pMap[p.proto] || 0) + 1);
     protoChart.data.labels = Object.keys(pMap);
@@ -187,20 +188,28 @@ function updateCharts() {
     portsChart.update();
 }
 
+// Listeners
 document.getElementById('filter-src-ip').oninput = applyFilters;
 document.getElementById('filter-dst-ip').oninput = applyFilters;
 document.getElementById('filter-proto').onchange = applyFilters;
 document.getElementById('filter-flags').oninput = applyFilters;
+
 document.getElementById('btn-only-errors').onclick = function() {
     showOnlyErrors = !showOnlyErrors;
     this.classList.toggle('active');
     applyFilters();
 };
+
 document.getElementById('btn-reset').onclick = () => location.reload();
+
 document.getElementById('export-pdf').onclick = () => {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
-    doc.text("Network Tshoot Report - Selvin Mejia", 14, 15);
-    doc.autoTable({ head: [['Delta', 'Source', 'Destination', 'Port', 'Status']], body: filteredData.slice(0, 50).map(p => [p.delta, p.src, p.dst, p.port, p.status]), startY: 25 });
-    doc.save('Tshoot_Report.pdf');
+    doc.text("Forensic Report - Selvin Mejia", 14, 15);
+    doc.autoTable({ 
+        head: [['Delta', 'Source', 'Destination', 'Port', 'Status']], 
+        body: filteredData.slice(0, 50).map(p => [p.delta, p.src, p.dst, p.port, p.status]),
+        startY: 25 
+    });
+    doc.save('Network_Tshoot_Report.pdf');
 };
