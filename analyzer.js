@@ -7,8 +7,8 @@ function initCharts() {
     const chartStyles = {
         responsive: true, maintainAspectRatio: false,
         plugins: { 
-            legend: { position: 'top', labels: { color: '#777', font: { size: 10 } } },
-            title: { display: true, color: '#fff', font: { size: 13 } }
+            legend: { position: 'top', labels: { color: '#777', font: { size: 10 } } }, 
+            title: { display: true, color: '#fff', font: { size: 13 } } 
         }
     };
     if (protoChart) protoChart.destroy();
@@ -18,19 +18,23 @@ function initCharts() {
     protoChart = new Chart(document.getElementById('chart-protocols'), {
         type: 'doughnut',
         data: { labels: [], datasets: [{ data: [], backgroundColor: ['#00f2ff', '#00ff41', '#f3ea5f', '#ff003c', '#9d00ff', '#ff8c00'] }] },
-        options: { ...chartStyles, plugins: { ...chartStyles.plugins, title: { text: 'Protocols Distribution' } } }
+        options: { ...chartStyles, plugins: { ...chartStyles.plugins, title: { ...chartStyles.plugins.title, text: 'Protocols Distribution' } } }
     });
 
     portsChart = new Chart(document.getElementById('chart-ports'), {
         type: 'pie',
         data: { labels: [], datasets: [{ data: [], backgroundColor: ['#00f2ff', '#00ff41', '#f3ea5f', '#ff003c', '#9d00ff', '#ff1493'] }] },
-        options: { ...chartStyles, plugins: { ...chartStyles.plugins, title: { text: 'Top Destination Ports' } } }
+        options: { ...chartStyles, plugins: { ...chartStyles.plugins, title: { ...chartStyles.plugins.title, text: 'Top Destination Ports' } } }
     });
 
     talkersChart = new Chart(document.getElementById('chart-talkers'), {
         type: 'bar',
         data: { labels: [], datasets: [{ label: 'Total Bytes', data: [], backgroundColor: '#00ff41' }] },
-        options: { ...chartStyles, plugins: { ...chartStyles.plugins, title: { text: 'Top Talkers (Bandwidth)' } }, scales: { y: { grid: { color: '#111' }, ticks: { color: '#444' } }, x: { grid: { display: false }, ticks: { color: '#444' } } } }
+        options: { 
+            ...chartStyles, 
+            plugins: { ...chartStyles.plugins, title: { ...chartStyles.plugins.title, text: 'Top Talkers (Bandwidth)' } },
+            scales: { y: { grid: { color: '#111' }, ticks: { color: '#444' } }, x: { grid: { display: false }, ticks: { color: '#444' } } }
+        }
     });
 }
 
