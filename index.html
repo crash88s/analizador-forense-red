@@ -3,85 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SOC Forensic & Tshoot Tool</title>
+    <title>Tshoot Tool | Forensic Analyzer</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 </head>
 <body class="dark-mode">
-    <header class="cyber-header">
-        <div class="logo">
-            <span class="neon-text">SOC</span> <span class="neon-text-blue">ANALYZER</span>
-        </div>
-        <div class="stats-container">
-            <div class="stat-card">Packets: <span id="stat-packets">0</span></div>
-            <div class="stat-card">Throughput: <span id="stat-throughput">0.00 Mbps</span></div>
-            <div class="stat-card">Errors/RST: <span id="stat-alerts" class="text-danger">0</span></div>
-        </div>
-        <div class="actions">
-            <button id="btn-only-errors" class="btn-warn">FILTRAR ERRORES</button>
-            <button id="export-pdf" class="btn-neon">EXPORT PDF</button>
-        </div>
-    </header>
 
-    <div class="app-container">
-        <aside class="sidebar">
-            <h3>FILTROS FORENSES</h3>
-            <div class="filter-group">
-                <label>IP Origen</label>
-                <input type="text" id="filter-src-ip" placeholder="Ej: 192.168.1.1">
-            </div>
-            <div class="filter-group">
-                <label>IP Destino</label>
-                <input type="text" id="filter-dst-ip" placeholder="Ej: 8.8.8.8">
-            </div>
-            <div class="filter-group">
-                <label>Protocolo</label>
-                <select id="filter-proto">
-                    <option value="all">Todos</option>
-                </select>
-            </div>
-            <div class="filter-group">
-                <label>Flags TCP</label>
-                <input type="text" id="filter-flags" placeholder="SYN, RST, ACK...">
-            </div>
+    <!-- SECCIÓN 1: LANDING / CARGA -->
+    <section id="landing-screen" class="full-screen">
+        <div class="upload-box">
+            <h1 class="neon-text-blue">TSHOOT <span class="neon-text-green">TOOL</span></h1>
+            <p>Análisis Avanzado de Tráfico Wireshark</p>
             
             <div class="drop-zone" id="drop-zone">
-                Arrastra JSON de Wireshark aquí
+                <div class="icon">📡</div>
+                <p>Arrastra el archivo JSON aquí o haz clic para buscar</p>
                 <input type="file" id="file-input" hidden accept=".json">
             </div>
-            <p class="credits">aplicacion realizada por <strong>Selvin Mejia</strong></p>
-        </aside>
 
-        <main class="content">
-            <div class="charts-grid">
-                <div class="chart-container wide">
-                    <canvas id="chart-timeline"></canvas>
+            <div id="progress-container" class="hidden">
+                <div class="progress-bar">
+                    <div id="progress-fill"></div>
                 </div>
-                <div class="chart-container">
-                    <canvas id="chart-protocols"></canvas>
-                </div>
+                <p id="progress-text">Procesando paquetes...</p>
             </div>
 
-            <div class="table-container">
-                <table id="traffic-table">
-                    <thead>
-                        <tr>
-                            <th>Delta Time</th>
-                            <th>Origen</th>
-                            <th>Destino</th>
-                            <th>Flags</th>
-                            <th>Size</th>
-                            <th>Status/HTTP</th>
-                            <th>Análisis Tshoot</th>
-                        </tr>
-                    </thead>
-                    <tbody id="table-body"></tbody>
-                </table>
+            <p class="credits-main">aplicacion realizada por <strong>Selvin Mejia</strong></p>
+        </div>
+    </section>
+
+    <!-- SECCIÓN 2: DASHBOARD (Oculto al inicio) -->
+    <section id="main-dashboard" class="hidden">
+        <header class="cyber-header">
+            <div class="logo">TSHOOT <span class="neon-text-green">TOOL</span></div>
+            <div class="stats-container">
+                <div class="stat-card">Packets: <span id="stat-packets">0</span></div>
+                <div class="stat-card">Alertas: <span id="stat-alerts" class="text-danger">0</span></div>
+                <div class="stat-card">IPs Únicas: <span id="stat-ips">0</span></div>
             </div>
-        </main>
-    </div>
+            <div class="actions">
+                <button id="btn-only-errors" class="btn-warn">ERRORES</button>
+                <button id="btn-reset" class="btn-neon-blue">NUEVO ARCHIVO</button>
+            </div>
+        </header>
+
+        <div class="app-container">
+            <aside class="sidebar">
+                <h3>FILTROS</h3>
+                <div class="filter-group">
+                    <label>IP Origen</label>
+                    <input type="text" id="filter-src-ip" placeholder="0.0.0.0">
+                </div>
+                <div class="filter-group">
+                    <label>IP Destino</label>
+                    <input type="text" id="filter-dst-ip" placeholder="0.0.0.0">
+                </div>
+                <div class="filter-group">
+                    <label>Protocolo</label>
+                    <select id="filter-proto"></select>
+                </div>
+                <div class="filter-group">
+                    <label>Flag TCP</label>
+                    <input type="text" id="filter-flags" placeholder="SYN, RST...">
+                </div>
+                <button id="export-pdf" class="btn-neon-green" style="width: 100%; margin-top: 20px;">EXPORTAR PDF</button>
+                <p class="credits-sidebar">By Selvin Mejia</p>
+            </aside>
+
+            <main class="content">
+                <div class="charts-grid">
+                    <div class="chart-container">
+                        <canvas id="chart-protocols"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="chart-ports"></canvas>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table id="traffic-table">
+                        <thead>
+                            <tr>
+                                <th>Delta (s)</th>
+                                <th>Origen</th>
+                                <th>Destino</th>
+                                <th>Flags</th>
+                                <th>Puerto</th>
+                                <th>Status/Análisis</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-body"></tbody>
+                    </table>
+                </div>
+            </main>
+        </div>
+    </section>
+
     <script src="analyzer.js"></script>
 </body>
 </html>
