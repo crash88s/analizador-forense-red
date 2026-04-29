@@ -25,7 +25,7 @@ function initCharts() {
 
     portsChart = new Chart(document.getElementById('chart-ports'), {
         type: 'pie',
-        data: { labels: [], datasets: [{ data: [], backgroundColor: ['#00f2ff', '#00ff41', '#f3ea5f', '#ff003c', '#9d00ff', '#ff8c00', '#ff1493'] }] },
+        data: { labels: [], datasets: [{ data: [], backgroundColor: ['#00f2ff', '#00ff41', '#f3ea5f', '#ff003c', '#9d00ff', '#ff1493'] }] },
         options: { ...chartStyles, plugins: { ...chartStyles.plugins, title: { ...chartStyles.plugins.title, text: 'Top Destination Ports' } } }
     });
 
@@ -168,7 +168,6 @@ function updateUI() {
     filteredData.slice(0, 300).forEach(p => {
         const tr = document.createElement('tr');
         tr.className = `row-${p.level}`;
-        
         tr.innerHTML = `
             <td class="col-delta">${p.delta} s</td>
             <td class="col-ip">${p.src}</td>
@@ -185,8 +184,8 @@ function updateUI() {
     });
     
     document.getElementById('stat-packets').innerText = filteredData.length.toLocaleString();
-    document.getElementById('stat-resets').innerText = filteredData.filter(p => p.isReset).length;
-    document.getElementById('stat-retrans').innerText = filteredData.filter(p => p.isRetrans).length;
+    document.getElementById('stat-resets').innerText = rawData.filter(p => p.isReset).length;
+    document.getElementById('stat-retrans').innerText = rawData.filter(p => p.isRetrans).length;
     document.getElementById('stat-ips').innerText = [...new Set(filteredData.map(p => p.src))].length;
     updateCharts();
 }
@@ -226,15 +225,12 @@ document.getElementById('filter-src-ip').oninput = applyFilters;
 document.getElementById('filter-dst-ip').oninput = applyFilters;
 document.getElementById('filter-proto').onchange = applyFilters;
 document.getElementById('filter-flags').oninput = applyFilters;
-
 document.getElementById('btn-only-errors').onclick = function() {
     showOnlyErrors = !showOnlyErrors;
     this.classList.toggle('active');
     applyFilters();
 };
-
 document.getElementById('btn-reset').onclick = () => location.reload();
-
 document.getElementById('export-pdf').onclick = () => {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF('l', 'mm', 'a4');
