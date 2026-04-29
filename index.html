@@ -34,15 +34,27 @@
         </div>
     </section>
 
-    <!-- SECCIÓN 2: DASHBOARD (Oculto al inicio) -->
+    <!-- SECCIÓN 2: DASHBOARD -->
     <section id="main-dashboard" class="hidden">
         <header class="cyber-header">
             <div class="logo">TSHOOT <span class="neon-text-green">TOOL</span></div>
-            <div class="stats-container">
-                <div class="stat-card">Packets: <span id="stat-packets">0</span></div>
-                <div class="stat-card">Alertas: <span id="stat-alerts" class="text-danger">0</span></div>
-                <div class="stat-card">IPs Únicas: <span id="stat-ips">0</span></div>
+            
+            <!-- Estadísticas mejoradas visualmente -->
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-label">PACKETS</span>
+                    <span id="stat-packets" class="stat-value">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">ALERTS</span>
+                    <span id="stat-alerts" class="stat-value text-danger">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">UNIQUE IPs</span>
+                    <span id="stat-ips" class="stat-value text-blue">0</span>
+                </div>
             </div>
+
             <div class="actions">
                 <button id="btn-only-errors" class="btn-warn">ERRORES</button>
                 <button id="btn-reset" class="btn-neon-blue">NUEVO ARCHIVO</button>
