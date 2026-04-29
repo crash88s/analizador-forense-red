@@ -1,18 +1,18 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tshoot Tool | By Selvin Mejia</title>
     <link rel="stylesheet" href="styles.css">
-    <!-- Librerías Externas -->
+    <!-- External Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 </head>
 <body class="dark-mode">
 
-    <!-- PANTALLA DE CARGA (LANDING) -->
+    <!-- LANDING SCREEN -->
     <section id="landing-screen" class="full-screen">
         <div class="upload-box">
             <h1 class="neon-title">TSHOOT <span class="neon-text-green">TOOL</span></h1>
@@ -20,19 +20,19 @@
             
             <div class="drop-zone" id="drop-zone">
                 <div class="icon-upload">📡</div>
-                <p>Arrastra el JSON de Wireshark aquí o haz clic</p>
+                <p>Drag Wireshark JSON here or click to browse</p>
                 <input type="file" id="file-input" hidden accept=".json">
             </div>
 
             <div id="progress-container" class="hidden">
                 <div class="progress-bar"><div id="progress-fill"></div></div>
-                <p id="progress-text">Procesando paquetes...</p>
+                <p id="progress-text">Processing packets...</p>
             </div>
             <p class="credits-main">Software developed by Selvin Mejia</p>
         </div>
     </section>
 
-    <!-- DASHBOARD PRINCIPAL -->
+    <!-- MAIN DASHBOARD -->
     <section id="main-dashboard" class="hidden">
         <header class="cyber-header">
             <div class="logo-area">
@@ -55,32 +55,32 @@
             </div>
 
             <div class="header-actions">
-                <button id="btn-only-errors" class="btn-warn">ERRORES</button>
-                <button id="btn-reset" class="btn-neon-blue">NUEVO ARCHIVO</button>
+                <button id="btn-only-errors" class="btn-warn">ERRORS</button>
+                <button id="btn-reset" class="btn-neon-blue">NEW FILE</button>
             </div>
         </header>
 
         <div class="app-container">
             <aside class="sidebar">
                 <div class="sidebar-top">
-                    <h3 class="filter-title">FILTROS FORENSES</h3>
+                    <h3 class="filter-title">FORENSIC FILTERS</h3>
                     <div class="filter-group">
-                        <label>IP Origen</label>
+                        <label>Source IP</label>
                         <input type="text" id="filter-src-ip" placeholder="0.0.0.0">
                     </div>
                     <div class="filter-group">
-                        <label>IP Destino</label>
+                        <label>Destination IP</label>
                         <input type="text" id="filter-dst-ip" placeholder="0.0.0.0">
                     </div>
                     <div class="filter-group">
-                        <label>Protocolo</label>
+                        <label>Protocol</label>
                         <select id="filter-proto"></select>
                     </div>
                     <div class="filter-group">
                         <label>TCP Flags</label>
                         <input type="text" id="filter-flags" placeholder="SYN, RST, ACK...">
                     </div>
-                    <button id="export-pdf" class="btn-neon-green">EXPORTAR REPORTE PDF</button>
+                    <button id="export-pdf" class="btn-neon-green">EXPORT PDF REPORT</button>
                 </div>
                 
                 <div class="sidebar-bottom">
@@ -111,7 +111,7 @@
                             </tr>
                         </thead>
                         <tbody id="table-body">
-                            <!-- Datos inyectados por JS -->
+                            <!-- Data injected by JS -->
                         </tbody>
                     </table>
                 </div>
