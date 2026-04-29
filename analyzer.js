@@ -168,6 +168,7 @@ function updateUI() {
     filteredData.slice(0, 300).forEach(p => {
         const tr = document.createElement('tr');
         tr.className = `row-${p.level}`;
+        
         tr.innerHTML = `
             <td class="col-delta">${p.delta} s</td>
             <td class="col-ip">${p.src}</td>
