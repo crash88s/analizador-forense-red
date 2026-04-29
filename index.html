@@ -3,19 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tshoot Tool Pro | Deep Forensic Analyzer</title>
+    <title>Tshoot Tool Pro | By Selvin Mejia</title>
     <link rel="stylesheet" href="styles.css">
+    <!-- External Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 </head>
 <body class="dark-mode">
 
-    <!-- MODAL PARA DETALLE DE PAQUETE -->
+    <!-- PACKET DETAIL MODAL -->
     <div id="packet-modal" class="modal hidden">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 class="neon-text-blue">DEEP PACKET INSPECTION</h2>
+                <h2 class="neon-text-blue">PACKET DEEP INSPECTION</h2>
                 <span class="close-modal">&times;</span>
             </div>
             <div class="modal-body">
@@ -24,6 +25,7 @@
         </div>
     </div>
 
+    <!-- LANDING SCREEN -->
     <section id="landing-screen" class="full-screen">
         <div class="upload-box horizontal-layout">
             <div class="brand-section">
@@ -31,28 +33,47 @@
                 <p class="subtitle">ADVANCED NETWORK FORENSICS v2.5</p>
                 <p class="credits-neon-main">Software developed by <span>Selvin Mejia</span></p>
             </div>
+            
             <div class="upload-zone" id="upload-zone">
                 <div class="icon-upload">📡</div>
-                <p class="main-instruction">Upload Wireshark JSON file</p>
-                <p class="sub-instruction"><span>Click to browse</span></p>
+                <p class="main-instruction">Please upload your Wireshark JSON file</p>
+                <p class="sub-instruction"><span>Click here to browse</span></p>
                 <input type="file" id="file-input" hidden accept=".json">
+                
                 <div id="progress-container" class="hidden">
                     <div class="progress-bar"><div id="progress-fill"></div></div>
-                    <p id="progress-text">Inspecting traffic...</p>
+                    <p id="progress-text">Processing packets...</p>
                 </div>
             </div>
         </div>
     </section>
 
+    <!-- MAIN DASHBOARD -->
     <section id="main-dashboard" class="hidden">
         <header class="cyber-header">
-            <div class="logo-area"><span class="logo-text">TSHOOT <span class="neon-text-green">TOOL</span></span></div>
-            <div class="stats-grid">
-                <div class="stat-item"><span class="stat-label">PACKETS</span><span id="stat-packets" class="stat-value">0</span></div>
-                <div class="stat-item"><span class="stat-label">RESETS (RST)</span><span id="stat-resets" class="stat-value text-danger">0</span></div>
-                <div class="stat-item"><span class="stat-label">RETRANSMISSIONS</span><span id="stat-retrans" class="stat-value text-warning">0</span></div>
-                <div class="stat-item"><span class="stat-label">UNIQUE IPs</span><span id="stat-ips" class="stat-value text-blue">0</span></div>
+            <div class="logo-area">
+                <span class="logo-text">TSHOOT <span class="neon-text-green">TOOL</span></span>
             </div>
+            
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-label">PACKETS</span>
+                    <span id="stat-packets" class="stat-value">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">RESETS (RST)</span>
+                    <span id="stat-resets" class="stat-value text-danger">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">RETRANSMISSIONS</span>
+                    <span id="stat-retrans" class="stat-value text-warning">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">UNIQUE IPs</span>
+                    <span id="stat-ips" class="stat-value text-blue">0</span>
+                </div>
+            </div>
+
             <div class="header-actions">
                 <button id="export-pdf" class="btn-neon-green">EXPORT PDF REPORT</button>
             </div>
@@ -62,13 +83,27 @@
             <aside class="sidebar">
                 <div class="sidebar-top">
                     <h3 class="filter-title">FORENSIC FILTERS</h3>
-                    <div class="filter-group"><label>Source IP</label><input type="text" id="filter-src-ip" placeholder="0.0.0.0"></div>
-                    <div class="filter-group"><label>Destination IP</label><input type="text" id="filter-dst-ip" placeholder="0.0.0.0"></div>
-                    <div class="filter-group"><label>Protocol</label><select id="filter-proto"></select></div>
-                    <div class="filter-group"><label>TCP Flags</label><input type="text" id="filter-flags" placeholder="SYN, RST..."></div>
+                    <div class="filter-group">
+                        <label>Source IP</label>
+                        <input type="text" id="filter-src-ip" placeholder="0.0.0.0">
+                    </div>
+                    <div class="filter-group">
+                        <label>Destination IP</label>
+                        <input type="text" id="filter-dst-ip" placeholder="0.0.0.0">
+                    </div>
+                    <div class="filter-group">
+                        <label>Protocol</label>
+                        <select id="filter-proto"></select>
+                    </div>
+                    <div class="filter-group">
+                        <label>TCP Flags</label>
+                        <input type="text" id="filter-flags" placeholder="SYN, RST, ACK...">
+                    </div>
+                    
                     <button id="btn-only-errors" class="btn-warn">ERRORS</button>
                     <button id="btn-clear" class="btn-clear">CLEAR FILTERS</button>
                 </div>
+                
                 <div class="sidebar-bottom">
                     <button id="btn-reset" class="btn-neon-blue-sidebar">NEW FILE</button>
                     <p class="credits-neon-sidebar">By Selvin Mejia</p>
@@ -77,9 +112,15 @@
 
             <main class="content">
                 <div class="charts-row">
-                    <div class="chart-box"><canvas id="chart-protocols"></canvas></div>
-                    <div class="chart-box"><canvas id="chart-ports"></canvas></div>
-                    <div class="chart-box"><canvas id="chart-talkers"></canvas></div>
+                    <div class="chart-box">
+                        <canvas id="chart-protocols"></canvas>
+                    </div>
+                    <div class="chart-box">
+                        <canvas id="chart-ports"></canvas>
+                    </div>
+                    <div class="chart-box">
+                        <canvas id="chart-talkers"></canvas>
+                    </div>
                 </div>
 
                 <div class="table-wrapper">
@@ -103,6 +144,7 @@
             </main>
         </div>
     </section>
+
     <script src="analyzer.js"></script>
 </body>
 </html>
