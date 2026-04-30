@@ -12,7 +12,7 @@
 body, html { margin: 0; padding: 0; height: 100%; font-family: 'Segoe UI', sans-serif; background: var(--bg-black); color: white; overflow: hidden; }
 .hidden { display: none !important; }
 
-/* --- ANIMACIONES NEÓN --- */
+/* NEON TITLE ANIMATION */
 @keyframes neon-glow {
     0%, 100% { text-shadow: 0 0 10px #fff, 0 0 20px var(--neon-blue), 0 0 40px var(--neon-blue); opacity: 1; }
     33% { text-shadow: 0 0 5px #fff, 0 0 15px var(--neon-blue), 0 0 30px var(--neon-blue); opacity: 0.9; }
@@ -21,7 +21,7 @@ body, html { margin: 0; padding: 0; height: 100%; font-family: 'Segoe UI', sans-
 }
 .animated-neon { animation: neon-glow 3s infinite ease-in-out; }
 
-/* --- TOOLTIPS (NUBES) --- */
+/* TOOLTIPS */
 .th-note { position: relative; cursor: help; display: block; width: 100%; }
 .th-note::after {
     content: attr(data-note); position: absolute; top: 110%; left: 50%; transform: translateX(-50%) translateY(10px);
@@ -31,11 +31,11 @@ body, html { margin: 0; padding: 0; height: 100%; font-family: 'Segoe UI', sans-
 }
 .th-note:hover::after { visibility: visible; opacity: 1; transform: translateX(-50%) translateY(5px); }
 
-/* --- LANDING SCREEN --- */
+/* LANDING SCREEN */
 .full-screen { height: 100vh; display: flex; justify-content: center; align-items: center; background: radial-gradient(circle, #111 0%, #000 100%); }
 .upload-box.horizontal-layout { display: flex; align-items: center; justify-content: space-between; background: #000; padding: 4rem; border: 1px solid #222; border-radius: 25px; width: 950px; gap: 60px; box-shadow: 0 0 40px rgba(0,0,0,0.7); }
 .brand-section { flex: 1; text-align: left; }
-.neon-title { font-size: 4rem; margin: 0; color: #fff; text-transform: uppercase; font-weight: 900; }
+.neon-title { font-size: 3.5rem; margin: 0; color: #fff; text-transform: uppercase; font-weight: 900; }
 .neon-text-green { color: var(--neon-green); text-shadow: 0 0 15px var(--neon-green); }
 .subtitle { letter-spacing: 5px; font-size: 0.75rem; color: var(--neon-blue); margin: 5px 0 30px 0; opacity: 0.8; }
 .brand-credits { margin-top: 25px; border-left: 2px solid var(--neon-blue); padding-left: 15px; }
@@ -47,41 +47,22 @@ body, html { margin: 0; padding: 0; height: 100%; font-family: 'Segoe UI', sans-
 .icon-forensic { font-size: 4rem; margin-bottom: 10px; filter: drop-shadow(0 0 10px var(--neon-blue)); }
 .neon-green-link { color: var(--neon-green) !important; text-decoration: underline; font-weight: bold; }
 
-/* --- HEADER & PROTAGONIC LOGO --- */
-.cyber-header { 
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center; 
-    padding: 0 25px; 
-    background: #000; 
-    border-bottom: 2px solid var(--neon-blue); 
-    height: 85px; /* Altura aumentada para el logo */
-}
-
+/* HEADER & PROTAGONIC LOGO */
+.cyber-header { display: flex; justify-content: space-between; align-items: center; padding: 0 25px; background: #000; border-bottom: 2px solid var(--neon-blue); height: 85px; }
 .logo-text { 
-    font-weight: 900; 
-    font-size: 2.2rem; /* Tamaño imponente */
-    color: #fff; 
-    text-transform: uppercase;
-    letter-spacing: -1px;
-    /* Efecto de brillo neón multicapa */
-    text-shadow: 
-        0 0 5px #fff,
-        0 0 10px var(--neon-blue),
-        0 0 20px var(--neon-blue),
-        0 0 40px var(--neon-blue);
+    font-weight: 900; font-size: 2.2rem; color: #fff; text-transform: uppercase; letter-spacing: -1px;
+    text-shadow: 0 0 5px #fff, 0 0 10px var(--neon-blue), 0 0 20px var(--neon-blue), 0 0 40px var(--neon-blue);
 }
 
 .stats-pill-container { display: flex; gap: 35px; background: #0d0d0d; padding: 8px 35px; border-radius: 50px; border: 1px solid #222; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
 .stat-pill-item { display: flex; flex-direction: column; align-items: center; min-width: 75px; }
 .stat-pill-label { font-size: 0.55rem; color: #666; letter-spacing: 1px; font-weight: bold; }
 .stat-pill-value { font-family: 'Courier New', monospace; font-size: 1.15rem; font-weight: bold; }
-
 .text-danger { color: var(--cyber-red) !important; text-shadow: 0 0 10px var(--cyber-red); }
 .text-warning { color: var(--cyber-yellow) !important; text-shadow: 0 0 10px var(--cyber-yellow); }
 .text-blue { color: var(--neon-blue) !important; text-shadow: 0 0 10px var(--neon-blue); }
 
-/* --- SIDEBAR --- */
+/* SIDEBAR & SIGNATURE NEON */
 .app-container { display: grid; grid-template-columns: 280px 1fr; height: calc(100vh - 85px); }
 .sidebar { background: var(--bg-panel); border-right: 1px solid #222; padding: 20px; display: flex; flex-direction: column; }
 .filter-title { font-size: 0.9rem; color: var(--neon-blue); letter-spacing: 2px; text-shadow: 0 0 5px var(--neon-blue); border-bottom: 1px solid #222; padding-bottom: 10px; margin-bottom: 20px; text-align: center; }
@@ -89,32 +70,46 @@ body, html { margin: 0; padding: 0; height: 100%; font-family: 'Segoe UI', sans-
 .filter-group label { display: block; font-size: 0.7rem; color: #777; margin-bottom: 5px; }
 input, select { width: 100%; background: #000; border: 1px solid #333; color: var(--neon-green); padding: 10px; border-radius: 5px; outline: none; font-size: 0.8rem; }
 .sidebar-bottom { text-align: center; padding-top: 20px; margin-top: auto; border-top: 1px solid #222; }
-.sig-name-subtle { font-size: 0.65rem; color: var(--neon-blue); opacity: 0.6; text-transform: uppercase; letter-spacing: 2px; }
 
-/* --- CONTENT & CHARTS --- */
+/* SELVIN MEJIA NEON RESTORED */
+.sig-name-subtle { 
+    font-size: 0.65rem; color: var(--neon-blue); text-transform: uppercase; 
+    letter-spacing: 2px; font-weight: bold;
+    text-shadow: 0 0 5px var(--neon-blue), 0 0 10px var(--neon-blue); /* Neon Effect */
+    opacity: 0.9;
+}
+
+/* CONTENT & CHARTS ROW */
 .content { padding: 25px; overflow-y: auto; background: #050505; display: flex; flex-direction: column; gap: 20px; }
-.charts-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; height: 230px; min-height: 230px; margin-bottom: 30px; }
-.chart-box { background: var(--bg-panel); padding: 10px; border-radius: 15px; border: 1px solid #222; overflow: hidden; }
+.charts-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; height: 260px; min-height: 260px; margin-bottom: 30px; }
+.chart-box { background: var(--bg-panel); padding: 15px; border-radius: 15px; border: 1px solid #222; overflow: hidden; }
 
-/* --- TABLE --- */
+/* TABLE */
 .table-wrapper { background: var(--bg-panel); border-radius: 10px; border: 1px solid #222; overflow-x: auto; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
 table { width: 100%; border-collapse: collapse; font-size: 0.78rem; table-layout: fixed; }
 th { background: #111; color: var(--neon-blue); padding: 12px 15px; text-align: left; position: sticky; top: 0; z-index: 10; border-bottom: 2px solid #222; overflow: visible !important; }
-td { padding: 12px 15px; border-bottom: 1px solid #1a1a1a; color: #ccc; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: left; }
+td { padding: 12px 15px; border-bottom: 1px solid #1a1a1a; color: #ccc; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 tr:hover td { background: rgba(0, 242, 255, 0.05); }
 tr.row-critical td { color: #ff3e3e !important; text-shadow: 0 0 5px var(--cyber-red); background: rgba(255, 62, 62, 0.08) !important; }
 tr.row-warning td { color: var(--cyber-yellow) !important; }
 
-/* --- COLUMNS --- */
+/* COLUMNS */
 .col-delta { width: 90px; } .col-ip { width: 150px; } .col-domain { width: 200px; } .col-ttl { width: 65px; } .col-win { width: 85px; } .col-flags { width: 120px; } .col-port { width: 85px; } .col-status { width: 110px; }
 
-/* --- MODAL --- */
+/* MODAL */
 .modal { position: fixed; z-index: 999999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: flex; align-items: center; justify-content: center; }
 .modal-content { background: #0a0a0a; border: 1px solid var(--neon-blue); width: 85%; height: 85vh; border-radius: 15px; display: flex; flex-direction: column; }
+.modal-header { padding: 15px 25px; border-bottom: 1px solid #222; display: flex; justify-content: space-between; align-items: center; background: #111; border-radius: 12px 12px 0 0; }
+.header-title-box { display: flex; align-items: center; gap: 10px; }
+.terminal-dot { width: 12px; height: 12px; border-radius: 50%; }
+.red { background: #ff5f56; } .yellow { background: #ffbd2e; } .green { background: #27c93f; }
 .modal-body { padding: 25px; overflow-y: auto !important; overflow-x: auto; flex-grow: 1; background: #050505; }
-pre { color: var(--neon-green); font-family: 'Consolas', monospace; font-size: 1rem; line-height: 1.6; }
+.modal-footer { padding: 10px 25px; border-top: 1px solid #222; background: #111; border-radius: 0 0 12px 12px; font-size: 0.6rem; color: var(--text-gray); letter-spacing: 2px; }
+.close-modal { font-size: 2.2rem; cursor: pointer; color: #444; line-height: 1; transition: 0.3s; }
+.close-modal:hover { color: var(--cyber-red); }
+pre { color: var(--neon-green); font-family: 'Consolas', monospace; font-size: 0.95rem; line-height: 1.5; margin: 0; }
 
-/* --- BUTTONS --- */
+/* BUTTONS */
 button { cursor: pointer; transition: 0.2s; font-weight: bold; border-radius: 4px; border: none; }
 .btn-neon-green { background: transparent; border: 1px solid var(--neon-green); color: var(--neon-green); padding: 8px 15px; }
 .btn-neon-green:hover { background: var(--neon-green); color: #000; box-shadow: 0 0 20px var(--neon-green); }
@@ -125,6 +120,6 @@ button { cursor: pointer; transition: 0.2s; font-weight: bold; border-radius: 4p
 .btn-clear { background: #111; border: 1px solid #444; color: #888; padding: 12px; width: 100%; margin-top: 15px; font-size: 0.8rem; }
 .btn-clear:hover { border-color: var(--neon-blue); color: var(--neon-blue); box-shadow: 0 0 15px var(--neon-blue); }
 
-/* --- PROGRESS --- */
+/* PROGRESS */
 #progress-fill { height: 100%; width: 0%; background: var(--neon-blue); transition: width 0.1s linear; box-shadow: 0 0 15px var(--neon-blue); }
 .progress-bar { width: 100%; height: 6px; background: #111; border-radius: 10px; margin-top: 15px; overflow: hidden; border: 1px solid #333; }
