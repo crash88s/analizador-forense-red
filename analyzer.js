@@ -3,18 +3,19 @@ let filteredData = [];
 let protoChart, portsChart, talkersChart;
 let showOnlyErrors = false;
 
-// 1. Chart Initialization
+// 1. Chart Initialization - TITLES FULLY ENABLED
 function initCharts() {
     const chartStyles = {
         responsive: true, maintainAspectRatio: false,
         events: ['mousemove', 'mouseout', 'touchstart', 'touchmove'],
         plugins: { 
-            legend: { 
-                position: 'top', 
-                labels: { color: '#777', font: { size: 9 } },
-                onClick: (e) => e.stopPropagation()
-            }, 
-            title: { display: true, color: '#fff', font: { size: 11, weight: 'bold' } } 
+            legend: { position: 'top', labels: { color: '#777', font: { size: 9 } }, onClick: (e) => e.stopPropagation() }, 
+            title: { 
+                display: true, 
+                color: '#fff', 
+                font: { size: 12, weight: 'bold' },
+                padding: { top: 0, bottom: 15 } // Extra padding for clarity
+            } 
         }
     };
     if (protoChart) protoChart.destroy();
@@ -24,13 +25,13 @@ function initCharts() {
     protoChart = new Chart(document.getElementById('chart-protocols'), {
         type: 'doughnut',
         data: { labels: [], datasets: [{ data: [], backgroundColor: ['#00f2ff', '#00ff41', '#f3ea5f', '#ff003c', '#9d00ff', '#ff8c00'] }] },
-        options: { ...chartStyles, plugins: { ...chartStyles.plugins, title: { text: 'Protocols Distribution' } } }
+        options: { ...chartStyles, plugins: { ...chartStyles.plugins, title: { ...chartStyles.plugins.title, text: 'Protocols Distribution' } } }
     });
 
     portsChart = new Chart(document.getElementById('chart-ports'), {
         type: 'pie',
         data: { labels: [], datasets: [{ data: [], backgroundColor: ['#00f2ff', '#00ff41', '#f3ea5f', '#ff003c', '#9d00ff', '#ff1493'] }] },
-        options: { ...chartStyles, plugins: { ...chartStyles.plugins, title: { text: 'Top Destination Ports' } } }
+        options: { ...chartStyles, plugins: { ...chartStyles.plugins, title: { ...chartStyles.plugins.title, text: 'Top Destination Ports' } } }
     });
 
     talkersChart = new Chart(document.getElementById('chart-talkers'), {
@@ -38,7 +39,7 @@ function initCharts() {
         data: { labels: [], datasets: [{ label: 'Bytes', data: [], backgroundColor: '#00ff41' }] },
         options: { 
             ...chartStyles, 
-            plugins: { ...chartStyles.plugins, title: { text: 'Top Talkers (Bandwidth)' } },
+            plugins: { ...chartStyles.plugins, title: { ...chartStyles.plugins.title, text: 'Top Talkers (Bandwidth)' } },
             scales: { y: { grid: { color: '#111' }, ticks: { color: '#444', font: { size: 8 } } }, x: { grid: { display: false }, ticks: { color: '#444', font: { size: 8 } } } }
         }
     });
