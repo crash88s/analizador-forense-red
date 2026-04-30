@@ -5,14 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tshoot Tool | By Selvin Mejia</title>
     <link rel="stylesheet" href="styles.css">
-    <!-- External Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 </head>
 <body class="dark-mode">
 
-    <!-- PACKET DETAIL MODAL -->
+    <!-- PACKET DETAIL MODAL - ULTRA PRO DESIGN -->
     <div id="packet-modal" class="modal hidden">
         <div class="modal-content">
             <div class="modal-header">
@@ -25,10 +24,11 @@
                 <span class="close-modal">&times;</span>
             </div>
             <div class="modal-body">
+                <div class="terminal-loader">DECODING FRAME LAYERS...</div>
                 <pre id="json-display"></pre>
             </div>
             <div class="modal-footer">
-                <p>HEX/JSON DECODER ACTIVE</p>
+                <p>FORENSIC ENGINE v2.5 | LOCAL BUFFER ENCRYPTED</p>
             </div>
         </div>
     </div>
@@ -99,7 +99,6 @@
                 <div class="sidebar-bottom">
                     <button id="btn-reset" class="btn-neon-blue-sidebar">NEW FILE</button>
                     <div class="sidebar-signature-subtle">
-                        <!-- PRIVACY BADGE ADDED -->
                         <p class="privacy-badge">🔒 Local Processing Only</p>
                         <p class="sig-name-subtle">BY SELVIN MEJIA</p>
                     </div>
@@ -118,14 +117,14 @@
                         <thead>
                             <tr>
                                 <th class="col-delta"><span class="th-note" data-note="Time between frames.">Delta</span></th>
-                                <th class="col-ip"><span class="th-note" data-note="Origin IP address.">Source IP</span></th>
-                                <th class="col-ip"><span class="th-note" data-note="Destination IP address.">Destination IP</span></th>
-                                <th class="col-domain"><span class="th-note" data-note="Domain via HTTP Host / TLS SNI.">Domain / Host</span></th>
-                                <th class="col-ttl"><span class="th-note" data-note="Time To Live (Hops).">TTL</span></th>
-                                <th class="col-win"><span class="th-note" data-note="TCP Window size (Buffer).">Win</span></th>
+                                <th class="col-ip"><span class="th-note" data-note="Origin IP.">Source IP</span></th>
+                                <th class="col-ip"><span class="th-note" data-note="Destination IP.">Destination IP</span></th>
+                                <th class="col-domain"><span class="th-note" data-note="HTTP Host / SNI Domain.">Domain / Host</span></th>
+                                <th class="col-ttl"><span class="th-note" data-note="Packet TTL (Hops).">TTL</span></th>
+                                <th class="col-win"><span class="th-note" data-note="TCP Receive Window.">Win</span></th>
                                 <th class="col-flags"><span class="th-note" data-note="TCP Control Flags.">Flags</span></th>
-                                <th class="col-port"><span class="th-note" data-note="Service Destination Port.">Port</span></th>
-                                <th class="col-status"><span class="th-note" data-note="Forensic Analysis Status.">Status</span></th>
+                                <th class="col-port"><span class="th-note" data-note="Target Port.">Port</span></th>
+                                <th class="col-status"><span class="th-note" data-note="Status Analysis.">Status</span></th>
                             </tr>
                         </thead>
                         <tbody id="table-body"></tbody>
