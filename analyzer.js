@@ -3,19 +3,14 @@ let filteredData = [];
 let protoChart, portsChart, talkersChart;
 let showOnlyErrors = false;
 
-// 1. Chart Initialization - TITLES FULLY ENABLED
+// 1. Chart Initialization
 function initCharts() {
     const chartStyles = {
         responsive: true, maintainAspectRatio: false,
         events: ['mousemove', 'mouseout', 'touchstart', 'touchmove'],
         plugins: { 
             legend: { position: 'top', labels: { color: '#777', font: { size: 9 } }, onClick: (e) => e.stopPropagation() }, 
-            title: { 
-                display: true, 
-                color: '#fff', 
-                font: { size: 12, weight: 'bold' },
-                padding: { top: 0, bottom: 15 } // Extra padding for clarity
-            } 
+            title: { display: true, color: '#fff', font: { size: 12, weight: 'bold' }, padding: { top: 0, bottom: 15 } } 
         }
     };
     if (protoChart) protoChart.destroy();
@@ -71,6 +66,7 @@ function handleFile(file) {
     reader.readAsText(file);
 }
 
+// 3. Processing
 function processData(json) {
     rawData = json.map(p => {
         const l = p._source.layers;
@@ -92,7 +88,6 @@ function processData(json) {
 
         const isRetrans = !!tcp["tcp.analysis.retransmission"];
         const winSize = tcp["tcp.window_size_value"] || "---";
-        let level = (isReset || winSize === "0") ? "critical" : (isRetrans ? "warning" : "normal");
 
         return {
             delta: parseFloat(l.frame["frame.time_delta"] || 0).toFixed(4),
@@ -107,7 +102,7 @@ function processData(json) {
             flags: flags.join(',') || "---",
             isReset: isReset,
             isRetrans: isRetrans,
-            level: level,
+            level: (isReset || winSize === "0") ? "critical" : (isRetrans ? "warning" : "normal"),
             original: l
         };
     });
@@ -117,26 +112,35 @@ function processData(json) {
     protos.forEach(pr => select.innerHTML += `<option value="${pr}">${pr}</option>`);
 }
 
+// 4. Filtering Logic
 function applyFilters() {
     const srcInput = document.getElementById('filter-src-ip').value.toLowerCase();
     const dstInput = document.getElementById('filter-dst-ip').value.toLowerCase();
     const protoSelect = document.getElementById('filter-proto').value;
+    const portInput = document.getElementById('filter-port').value;
     const flagInput = document.getElementById('filter-flags').value.toUpperCase();
+
     filteredData = rawData.filter(p => {
         const matchSrc = (srcInput === "" || p.src.toLowerCase().includes(srcInput));
         const matchDst = (dstInput === "" || p.dst.toLowerCase().includes(dstInput));
         const matchProto = (protoSelect === "all" || p.proto === protoSelect);
+        const matchPort = (portInput === "" || p.port.toString() === portInput);
         const matchFlags = (flagInput === "" || p.flags.includes(flagInput));
         const matchError = (!showOnlyErrors || p.level !== "normal");
-        return matchSrc && matchDst && matchProto && matchFlags && matchError;
+
+        return matchSrc && matchDst && matchProto && matchPort && matchFlags && matchError;
     });
     updateUI();
 }
 
 document.getElementById('btn-clear').onclick = () => {
-    document.getElementById('filter-src-ip').value = ""; document.getElementById('filter-dst-ip').value = "";
-    document.getElementById('filter-proto').value = "all"; document.getElementById('filter-flags').value = "";
-    showOnlyErrors = false; document.getElementById('btn-only-errors').classList.remove('active');
+    document.getElementById('filter-src-ip').value = "";
+    document.getElementById('filter-dst-ip').value = "";
+    document.getElementById('filter-proto').value = "all";
+    document.getElementById('filter-port').value = "";
+    document.getElementById('filter-flags').value = "";
+    showOnlyErrors = false;
+    document.getElementById('btn-only-errors').classList.remove('active');
     applyFilters();
 };
 
@@ -146,7 +150,7 @@ function updateUI() {
     filteredData.slice(0, 300).forEach(p => {
         const tr = document.createElement('tr');
         tr.className = `row-${p.level}`;
-        tr.innerHTML = `<td class="col-delta">${p.delta} s</td><td class="col-ip">${p.src}</td><td class="col-ip">${p.dst}</td><td class="col-domain" style="color:var(--neon-blue)">${p.domain}</td><td class="col-ttl" style="text-align:center">${p.ttl}</td><td class="col-win" style="text-align:center">${p.win}</td><td class="col-flags">${p.flags}</td><td class="col-port" style="text-align:center">${p.port}</td><td class="col-status">${p.level.toUpperCase()}</td>`;
+        tr.innerHTML = `<td class="col-delta">${p.delta} s</td><td class="col-ip">${p.src}</td><td class="col-ip">${p.dst}</td><td class="col-domain" style="color:var(--neon-blue)">${p.domain}</td><td class="col-ttl" style="text-align:left">${p.ttl}</td><td class="col-win" style="text-align:left">${p.win}</td><td class="col-flags">${p.flags}</td><td class="col-port">${p.port}</td><td class="col-status">${p.level.toUpperCase()}</td>`;
         tr.onclick = () => { 
             document.getElementById('json-display').innerText = JSON.stringify(p.original, null, 4); 
             document.getElementById('packet-modal').classList.remove('hidden'); 
@@ -174,10 +178,13 @@ function updateCharts() {
 
 document.querySelector('.close-modal').onclick = () => document.getElementById('packet-modal').classList.add('hidden');
 window.onclick = (e) => { if (e.target == document.getElementById('packet-modal')) document.getElementById('packet-modal').classList.add('hidden'); };
+
 document.getElementById('filter-src-ip').oninput = applyFilters;
 document.getElementById('filter-dst-ip').oninput = applyFilters;
 document.getElementById('filter-proto').onchange = applyFilters;
+document.getElementById('filter-port').oninput = applyFilters;
 document.getElementById('filter-flags').oninput = applyFilters;
+
 document.getElementById('btn-only-errors').onclick = function() { showOnlyErrors = !showOnlyErrors; this.classList.toggle('active'); applyFilters(); };
 document.getElementById('btn-reset').onclick = () => location.reload();
 document.getElementById('export-pdf').onclick = () => {
