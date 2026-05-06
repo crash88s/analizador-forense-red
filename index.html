@@ -3,32 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tshoot Tool | By Selvin Mejia</title>
+    <title>Tshoot Tool Pro | By Selvin Mejia</title>
     <link rel="stylesheet" href="styles.css">
+    <!-- External Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 </head>
 <body class="crystal-mode">
 
-    <!-- PACKET DETAIL MODAL - CRYSTAL REDESIGN -->
+    <!-- PACKET DETAIL MODAL - RECONSTRUIDO -->
     <div id="packet-modal" class="modal hidden">
-        <div class="modal-content crystal-card">
+        <div class="modal-window crystal-white">
             <div class="modal-header">
-                <div class="header-title-box">
-                    <span class="terminal-dot red"></span>
-                    <span class="terminal-dot yellow"></span>
-                    <span class="terminal-dot green"></span>
-                    <h2 class="neon-text-blue">PACKET DEEP INSPECTION</h2>
+                <div class="window-controls">
+                    <span class="dot red"></span>
+                    <span class="dot yellow"></span>
+                    <span class="dot green"></span>
                 </div>
+                <h2 class="modal-title">PACKET DEEP INSPECTION</h2>
                 <span class="close-modal">&times;</span>
             </div>
             <div class="modal-body">
-                <div class="terminal-loader">DECODING FRAME LAYERS...</div>
+                <div class="terminal-info">DECODING JSON STRUCTURE...</div>
                 <pre id="json-display"></pre>
             </div>
             <div class="modal-footer">
-                <p>FORENSIC ENGINE v1.1 | LOCAL PROCESSING</p>
+                <span>BUFFER: LOCAL_ONLY</span>
+                <span>v2.5 PRO ENGINE</span>
             </div>
         </div>
     </div>
@@ -38,7 +40,7 @@
         <div class="upload-box horizontal-layout crystal-card">
             <div class="brand-section">
                 <h1 class="neon-title animated-neon">TSHOOT <span class="neon-text-green">TOOL</span></h1>
-                <p class="subtitle">ADVANCED NETWORK FORENSICS v1.1</p>
+                <p class="subtitle">ADVANCED NETWORK FORENSICS v2.5</p>
                 <div class="brand-credits">
                     <p class="credits-label">SOFTWARE DEVELOPED BY</p>
                     <p class="credits-name">SELVIN MEJIA</p>
@@ -111,9 +113,9 @@
 
             <main class="content">
                 <div class="charts-row">
-                    <div class="chart-box crystal-card"><canvas id="chart-protocols"></canvas></div>
-                    <div class="chart-box crystal-card"><canvas id="chart-ports"></canvas></div>
-                    <div class="chart-box crystal-card"><canvas id="chart-talkers"></canvas></div>
+                    <div class="chart-box crystal-white"><canvas id="chart-protocols"></canvas></div>
+                    <div class="chart-box crystal-white"><canvas id="chart-ports"></canvas></div>
+                    <div class="chart-box crystal-white"><canvas id="chart-talkers"></canvas></div>
                 </div>
 
                 <div class="table-wrapper crystal-card">
@@ -124,7 +126,7 @@
                                 <th class="col-ip"><span class="th-note" data-note="Origin IP.">Source IP</span></th>
                                 <th class="col-ip"><span class="th-note" data-note="Destination IP.">Destination IP</span></th>
                                 <th class="col-domain"><span class="th-note" data-note="Domain (HTTP/TLS).">Domain / Host</span></th>
-                                <th class="col-ttl"><span class="th-note" data-note="TTL (Hops).">TTL</span></th>
+                                <th class="col-ttl"><span class="th-note" data-note="Packet TTL.">TTL</span></th>
                                 <th class="col-win"><span class="th-note" data-note="Window Size.">Win</span></th>
                                 <th class="col-flags"><span class="th-note" data-note="TCP Flags.">Flags</span></th>
                                 <th class="col-port"><span class="th-note" data-note="Port.">Port</span></th>
