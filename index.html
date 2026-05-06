@@ -3,18 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tshoot Tool | By Selvin Mejia</title>
+    <title>Tshoot Tool Pro | By Selvin Mejia</title>
     <link rel="stylesheet" href="styles.css">
-    <!-- External Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 </head>
-<body class="aero-mode">
+<body class="light-aero">
 
-    <!-- PACKET DETAIL MODAL - WINDOWS 7 STYLE -->
+    <!-- PACKET DETAIL MODAL - ULTRA CLEAR DESIGN -->
     <div id="packet-modal" class="modal hidden">
-        <div class="modal-window glass-panel">
+        <div class="modal-window">
             <div class="modal-header">
                 <div class="window-controls">
                     <span class="dot red"></span>
@@ -29,29 +28,29 @@
                 <pre id="json-display"></pre>
             </div>
             <div class="modal-footer">
-                <span>BUFFER: LOCAL RAM ONLY</span>
-                <span>ANALYSIS ENGINE v2.5</span>
+                <span>SECURITY LEVEL: LOCAL_RAM</span>
+                <span>ENGINE v2.5 PRO</span>
             </div>
         </div>
     </div>
 
     <!-- LANDING SCREEN -->
     <section id="landing-screen" class="full-screen">
-        <div class="upload-box horizontal-layout glass-panel">
+        <div class="upload-box horizontal-layout">
             <div class="brand-section">
-                <h1 class="aero-title">TSHOOT <span class="text-green">TOOL</span></h1>
+                <h1 class="main-title">TSHOOT <span class="text-blue">TOOL</span></h1>
                 <p class="subtitle">ADVANCED NETWORK FORENSICS</p>
                 <div class="brand-credits">
-                    <p class="credits-label">SOFTWARE DEVELOPED BY</p>
+                    <p class="credits-label">DEVELOPED BY</p>
                     <p class="credits-name">SELVIN MEJIA</p>
                 </div>
             </div>
             
-            <div class="upload-zone glass-panel" id="upload-zone">
+            <div class="upload-zone" id="upload-zone">
                 <div id="upload-content">
                     <div class="icon-forensic">🔍</div>
                     <p class="main-instruction">Load Wireshark JSON Capture</p>
-                    <p class="sub-instruction"><span class="link-blue">Click here to browse</span></p>
+                    <p class="sub-instruction"><span class="link-action">Click here to browse</span></p>
                     <input type="file" id="file-input" hidden accept=".json">
                 </div>
                 
@@ -67,23 +66,23 @@
 
     <!-- MAIN DASHBOARD -->
     <section id="main-dashboard" class="hidden">
-        <header class="cyber-header glass-panel">
+        <header class="main-header">
             <div class="logo-area">
-                <span class="logo-text">TSHOOT <span class="text-green">TOOL</span></span>
+                <span class="logo-text">TSHOOT <span class="text-blue">TOOL</span></span>
             </div>
             
-            <div class="stats-pill-container glass-panel">
+            <div class="stats-pill-container">
                 <div class="stat-pill-item"><span class="stat-pill-label">PACKETS</span><span id="stat-packets" class="stat-pill-value">0</span></div>
                 <div class="stat-pill-item"><span class="stat-pill-label">ERRORS</span><span id="stat-resets" class="stat-pill-value text-danger">0</span></div>
                 <div class="stat-pill-item"><span class="stat-pill-label">RETRANS.</span><span id="stat-retrans" class="stat-pill-value text-warning">0</span></div>
                 <div class="stat-pill-item"><span class="stat-pill-label">UNIQUE IPs</span><span id="stat-ips" class="stat-pill-value text-blue">0</span></div>
             </div>
 
-            <div class="header-actions"><button id="export-pdf" class="btn-pdf">EXPORT PDF REPORT</button></div>
+            <div class="header-actions"><button id="export-pdf" class="btn-pdf">EXPORT REPORT</button></div>
         </header>
 
         <div class="app-container">
-            <aside class="sidebar glass-panel">
+            <aside class="sidebar">
                 <div class="sidebar-top">
                     <h3 class="filter-title">FORENSIC FILTERS</h3>
                     <div class="filter-group"><label>Source IP</label><input type="text" id="filter-src-ip" placeholder="0.0.0.0"></div>
@@ -113,24 +112,24 @@
 
             <main class="content">
                 <div class="charts-row">
-                    <div class="chart-box glass-white"><canvas id="chart-protocols"></canvas></div>
-                    <div class="chart-box glass-white"><canvas id="chart-ports"></canvas></div>
-                    <div class="chart-box glass-white"><canvas id="chart-talkers"></canvas></div>
+                    <div class="chart-box"><canvas id="chart-protocols"></canvas></div>
+                    <div class="chart-box"><canvas id="chart-ports"></canvas></div>
+                    <div class="chart-box"><canvas id="chart-talkers"></canvas></div>
                 </div>
 
-                <div class="table-wrapper glass-panel">
+                <div class="table-wrapper">
                     <table id="traffic-table">
                         <thead>
                             <tr>
-                                <th class="col-delta"><span class="th-note" data-note="Time between frames.">Delta</span></th>
-                                <th class="col-ip"><span class="th-note" data-note="Packet origin.">Source IP</span></th>
-                                <th class="col-ip"><span class="th-note" data-note="Packet destination.">Destination IP</span></th>
-                                <th class="col-domain"><span class="th-note" data-note="HTTP Host or TLS SNI.">Domain / Host</span></th>
-                                <th class="col-ttl"><span class="th-note" data-note="Hops remaining.">TTL</span></th>
-                                <th class="col-win"><span class="th-note" data-note="Buffer capacity.">Win</span></th>
-                                <th class="col-flags"><span class="th-note" data-note="TCP Control bits.">Flags</span></th>
-                                <th class="col-port"><span class="th-note" data-note="Communication Port.">Port</span></th>
-                                <th class="col-status"><span class="th-note" data-note="Packet health.">Status</span></th>
+                                <th class="col-delta">Delta</th>
+                                <th class="col-ip">Source IP</th>
+                                <th class="col-ip">Destination IP</th>
+                                <th class="col-domain">Domain / Host</th>
+                                <th class="col-ttl">TTL</th>
+                                <th class="col-win">Win</th>
+                                <th class="col-flags">Flags</th>
+                                <th class="col-port">Port</th>
+                                <th class="col-status">Status</th>
                             </tr>
                         </thead>
                         <tbody id="table-body"></tbody>
