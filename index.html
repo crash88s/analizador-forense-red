@@ -10,53 +10,53 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 </head>
-<body class="crystal-mode">
+<body class="aero-mode">
 
-    <!-- PACKET DETAIL MODAL - RECONSTRUIDO -->
+    <!-- PACKET DETAIL MODAL - WINDOWS 7 STYLE -->
     <div id="packet-modal" class="modal hidden">
-        <div class="modal-window crystal-white">
+        <div class="modal-window glass-panel">
             <div class="modal-header">
                 <div class="window-controls">
                     <span class="dot red"></span>
                     <span class="dot yellow"></span>
                     <span class="dot green"></span>
+                    <h2 class="modal-title">PACKET DEEP INSPECTION</h2>
                 </div>
-                <h2 class="modal-title">PACKET DEEP INSPECTION</h2>
                 <span class="close-modal">&times;</span>
             </div>
             <div class="modal-body">
-                <div class="terminal-info">DECODING JSON STRUCTURE...</div>
+                <div class="terminal-info">DECODING FRAME DATA...</div>
                 <pre id="json-display"></pre>
             </div>
             <div class="modal-footer">
-                <span>BUFFER: LOCAL_ONLY</span>
-                <span>v2.5 PRO ENGINE</span>
+                <span>BUFFER: LOCAL RAM ONLY</span>
+                <span>ANALYSIS ENGINE v2.5</span>
             </div>
         </div>
     </div>
 
     <!-- LANDING SCREEN -->
     <section id="landing-screen" class="full-screen">
-        <div class="upload-box horizontal-layout crystal-card">
+        <div class="upload-box horizontal-layout glass-panel">
             <div class="brand-section">
-                <h1 class="neon-title animated-neon">TSHOOT <span class="neon-text-green">TOOL</span></h1>
-                <p class="subtitle">ADVANCED NETWORK FORENSICS v2.5</p>
+                <h1 class="aero-title">TSHOOT <span class="text-green">TOOL</span></h1>
+                <p class="subtitle">ADVANCED NETWORK FORENSICS</p>
                 <div class="brand-credits">
                     <p class="credits-label">SOFTWARE DEVELOPED BY</p>
                     <p class="credits-name">SELVIN MEJIA</p>
                 </div>
             </div>
             
-            <div class="upload-zone crystal-card" id="upload-zone">
+            <div class="upload-zone glass-panel" id="upload-zone">
                 <div id="upload-content">
                     <div class="icon-forensic">🔍</div>
                     <p class="main-instruction">Load Wireshark JSON Capture</p>
-                    <p class="sub-instruction"><span class="neon-green-link">Click here to browse</span></p>
+                    <p class="sub-instruction"><span class="link-blue">Click here to browse</span></p>
                     <input type="file" id="file-input" hidden accept=".json">
                 </div>
                 
                 <div id="progress-container" class="hidden">
-                    <p id="progress-text">CYBER SCAN IN PROGRESS...</p>
+                    <p id="progress-text">Deep Scanning...</p>
                     <div class="progress-bar">
                         <div id="progress-fill"></div>
                     </div>
@@ -67,23 +67,23 @@
 
     <!-- MAIN DASHBOARD -->
     <section id="main-dashboard" class="hidden">
-        <header class="cyber-header crystal-card">
+        <header class="cyber-header glass-panel">
             <div class="logo-area">
-                <span class="logo-text animated-neon">TSHOOT <span class="neon-text-green">TOOL</span></span>
+                <span class="logo-text">TSHOOT <span class="text-green">TOOL</span></span>
             </div>
             
-            <div class="stats-pill-container crystal-card">
+            <div class="stats-pill-container glass-panel">
                 <div class="stat-pill-item"><span class="stat-pill-label">PACKETS</span><span id="stat-packets" class="stat-pill-value">0</span></div>
                 <div class="stat-pill-item"><span class="stat-pill-label">ERRORS</span><span id="stat-resets" class="stat-pill-value text-danger">0</span></div>
                 <div class="stat-pill-item"><span class="stat-pill-label">RETRANS.</span><span id="stat-retrans" class="stat-pill-value text-warning">0</span></div>
                 <div class="stat-pill-item"><span class="stat-pill-label">UNIQUE IPs</span><span id="stat-ips" class="stat-pill-value text-blue">0</span></div>
             </div>
 
-            <div class="header-actions"><button id="export-pdf" class="btn-neon-green">EXPORT PDF</button></div>
+            <div class="header-actions"><button id="export-pdf" class="btn-pdf">EXPORT PDF REPORT</button></div>
         </header>
 
         <div class="app-container">
-            <aside class="sidebar crystal-card">
+            <aside class="sidebar glass-panel">
                 <div class="sidebar-top">
                     <h3 class="filter-title">FORENSIC FILTERS</h3>
                     <div class="filter-group"><label>Source IP</label><input type="text" id="filter-src-ip" placeholder="0.0.0.0"></div>
@@ -98,39 +98,39 @@
                     </div>
                     <div class="filter-group"><label>TCP Flags</label><input type="text" id="filter-flags" placeholder="SYN, RST..."></div>
                     
-                    <button id="btn-only-errors" class="btn-warn">ERRORS ONLY</button>
+                    <button id="btn-only-errors" class="btn-errors">ERRORS ONLY</button>
                     <button id="btn-clear" class="btn-clear">CLEAR FILTERS</button>
                 </div>
                 
                 <div class="sidebar-bottom">
-                    <button id="btn-reset" class="btn-neon-blue-sidebar">NEW FILE</button>
-                    <div class="sidebar-signature-subtle">
+                    <button id="btn-reset" class="btn-new">NEW FILE</button>
+                    <div class="sidebar-signature">
                         <p class="privacy-badge">🔒 Local Processing Only</p>
-                        <p class="sig-name-subtle">BY SELVIN MEJIA</p>
+                        <p class="sig-name">BY SELVIN MEJIA</p>
                     </div>
                 </div>
             </aside>
 
             <main class="content">
                 <div class="charts-row">
-                    <div class="chart-box crystal-white"><canvas id="chart-protocols"></canvas></div>
-                    <div class="chart-box crystal-white"><canvas id="chart-ports"></canvas></div>
-                    <div class="chart-box crystal-white"><canvas id="chart-talkers"></canvas></div>
+                    <div class="chart-box glass-white"><canvas id="chart-protocols"></canvas></div>
+                    <div class="chart-box glass-white"><canvas id="chart-ports"></canvas></div>
+                    <div class="chart-box glass-white"><canvas id="chart-talkers"></canvas></div>
                 </div>
 
-                <div class="table-wrapper crystal-card">
+                <div class="table-wrapper glass-panel">
                     <table id="traffic-table">
                         <thead>
                             <tr>
                                 <th class="col-delta"><span class="th-note" data-note="Time between frames.">Delta</span></th>
-                                <th class="col-ip"><span class="th-note" data-note="Origin IP.">Source IP</span></th>
-                                <th class="col-ip"><span class="th-note" data-note="Destination IP.">Destination IP</span></th>
-                                <th class="col-domain"><span class="th-note" data-note="Domain (HTTP/TLS).">Domain / Host</span></th>
-                                <th class="col-ttl"><span class="th-note" data-note="Packet TTL.">TTL</span></th>
-                                <th class="col-win"><span class="th-note" data-note="Window Size.">Win</span></th>
-                                <th class="col-flags"><span class="th-note" data-note="TCP Flags.">Flags</span></th>
-                                <th class="col-port"><span class="th-note" data-note="Port.">Port</span></th>
-                                <th class="col-status"><span class="th-note" data-note="Forensic Status.">Status</span></th>
+                                <th class="col-ip"><span class="th-note" data-note="Packet origin.">Source IP</span></th>
+                                <th class="col-ip"><span class="th-note" data-note="Packet destination.">Destination IP</span></th>
+                                <th class="col-domain"><span class="th-note" data-note="HTTP Host or TLS SNI.">Domain / Host</span></th>
+                                <th class="col-ttl"><span class="th-note" data-note="Hops remaining.">TTL</span></th>
+                                <th class="col-win"><span class="th-note" data-note="Buffer capacity.">Win</span></th>
+                                <th class="col-flags"><span class="th-note" data-note="TCP Control bits.">Flags</span></th>
+                                <th class="col-port"><span class="th-note" data-note="Communication Port.">Port</span></th>
+                                <th class="col-status"><span class="th-note" data-note="Packet health.">Status</span></th>
                             </tr>
                         </thead>
                         <tbody id="table-body"></tbody>
