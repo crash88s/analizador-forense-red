@@ -3,7 +3,6 @@ let filteredData = [];
 let protoChart, portsChart, talkersChart;
 let showOnlyErrors = false;
 
-// 1. Chart Initialization
 function initCharts() {
     const chartStyles = {
         responsive: true, maintainAspectRatio: false,
@@ -20,27 +19,22 @@ function initCharts() {
     protoChart = new Chart(document.getElementById('chart-protocols'), {
         type: 'doughnut',
         data: { labels: [], datasets: [{ data: [], backgroundColor: ['#00f2ff', '#00ff41', '#f3ea5f', '#ff003c', '#9d00ff', '#ff8c00'] }] },
-        options: { ...chartStyles, plugins: { ...chartStyles.plugins, title: { ...chartStyles.plugins.title, text: 'Protocols Distribution' } } }
+        options: { ...chartStyles, plugins: { ...chartStyles.plugins, title: { text: 'Protocols Distribution' } } }
     });
 
     portsChart = new Chart(document.getElementById('chart-ports'), {
         type: 'pie',
         data: { labels: [], datasets: [{ data: [], backgroundColor: ['#00f2ff', '#00ff41', '#f3ea5f', '#ff003c', '#9d00ff', '#ff1493'] }] },
-        options: { ...chartStyles, plugins: { ...chartStyles.plugins, title: { ...chartStyles.plugins.title, text: 'Top Destination Ports' } } }
+        options: { ...chartStyles, plugins: { ...chartStyles.plugins, title: { text: 'Top Destination Ports' } } }
     });
 
     talkersChart = new Chart(document.getElementById('chart-talkers'), {
         type: 'bar',
         data: { labels: [], datasets: [{ label: 'Bytes', data: [], backgroundColor: '#00ff41' }] },
-        options: { 
-            ...chartStyles, 
-            plugins: { ...chartStyles.plugins, title: { ...chartStyles.plugins.title, text: 'Top Talkers (Bandwidth)' } },
-            scales: { y: { grid: { color: '#111' }, ticks: { color: '#444', font: { size: 8 } } }, x: { grid: { display: false }, ticks: { color: '#444', font: { size: 8 } } } }
-        }
+        options: { ...chartStyles, plugins: { ...chartStyles.plugins, title: { text: 'Top Talkers (Bandwidth)' } }, scales: { y: { grid: { color: '#333' }, ticks: { color: '#777', font: { size: 8 } } }, x: { grid: { display: false }, ticks: { color: '#777', font: { size: 8 } } } } }
     });
 }
 
-// 2. File Handling
 const uploadZone = document.getElementById('upload-zone');
 const fileInput = document.getElementById('file-input');
 uploadZone.onclick = () => fileInput.click();
@@ -66,7 +60,6 @@ function handleFile(file) {
     reader.readAsText(file);
 }
 
-// 3. Processing
 function processData(json) {
     rawData = json.map(p => {
         const l = p._source.layers;
@@ -112,14 +105,12 @@ function processData(json) {
     protos.forEach(pr => select.innerHTML += `<option value="${pr}">${pr}</option>`);
 }
 
-// 4. Filtering Logic
 function applyFilters() {
     const srcInput = document.getElementById('filter-src-ip').value.toLowerCase();
     const dstInput = document.getElementById('filter-dst-ip').value.toLowerCase();
     const protoSelect = document.getElementById('filter-proto').value;
     const portInput = document.getElementById('filter-port').value;
     const flagInput = document.getElementById('filter-flags').value.toUpperCase();
-
     filteredData = rawData.filter(p => {
         const matchSrc = (srcInput === "" || p.src.toLowerCase().includes(srcInput));
         const matchDst = (dstInput === "" || p.dst.toLowerCase().includes(dstInput));
@@ -127,20 +118,16 @@ function applyFilters() {
         const matchPort = (portInput === "" || p.port.toString() === portInput);
         const matchFlags = (flagInput === "" || p.flags.includes(flagInput));
         const matchError = (!showOnlyErrors || p.level !== "normal");
-
         return matchSrc && matchDst && matchProto && matchPort && matchFlags && matchError;
     });
     updateUI();
 }
 
 document.getElementById('btn-clear').onclick = () => {
-    document.getElementById('filter-src-ip').value = "";
-    document.getElementById('filter-dst-ip').value = "";
-    document.getElementById('filter-proto').value = "all";
-    document.getElementById('filter-port').value = "";
+    document.getElementById('filter-src-ip').value = ""; document.getElementById('filter-dst-ip').value = "";
+    document.getElementById('filter-proto').value = "all"; document.getElementById('filter-port').value = "";
     document.getElementById('filter-flags').value = "";
-    showOnlyErrors = false;
-    document.getElementById('btn-only-errors').classList.remove('active');
+    showOnlyErrors = false; document.getElementById('btn-only-errors').classList.remove('active');
     applyFilters();
 };
 
