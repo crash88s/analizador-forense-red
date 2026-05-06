@@ -3,41 +3,59 @@ let filteredData = [];
 let protoChart, portsChart, talkersChart;
 let showOnlyErrors = false;
 
+// 1. Chart Initialization - UPDATED COLORS FOR CRYSTAL WHITE BACKGROUND
 function initCharts() {
     const chartStyles = {
         responsive: true, maintainAspectRatio: false,
+        events: ['mousemove', 'mouseout', 'touchstart', 'touchmove'],
         plugins: { 
-            legend: { position: 'top', labels: { color: '#aaa', font: { size: 9 } }, onClick: (e) => e.stopPropagation() }, 
-            title: { display: true, color: '#fff', font: { size: 11, weight: 'bold' } } 
+            legend: { 
+                position: 'top', 
+                labels: { color: '#000', font: { size: 9, weight: 'bold' } }, // Black for white background
+                onClick: (e) => e.stopPropagation()
+            }, 
+            title: { 
+                display: true, 
+                color: '#111', // Dark for white background
+                font: { size: 11, weight: '900' } 
+            } 
         }
     };
     if (protoChart) protoChart.destroy();
     if (portsChart) portsChart.destroy();
     if (talkersChart) talkersChart.destroy();
 
-    protoChart = new Chart(document.getElementById('chart-protocols'), {
+    const ctx1 = document.getElementById('chart-protocols').getContext('2d');
+    const ctx2 = document.getElementById('chart-ports').getContext('2d');
+    const ctx3 = document.getElementById('chart-talkers').getContext('2d');
+
+    protoChart = new Chart(ctx1, {
         type: 'doughnut',
-        data: { labels: [], datasets: [{ data: [], backgroundColor: ['#00f2ff', '#00ff41', '#f3ea5f', '#ff003c', '#9d00ff', '#ff8c00'] }] },
+        data: { labels: [], datasets: [{ data: [], backgroundColor: ['#00d2ff', '#3aeb34', '#ffcc00', '#ff3131', '#9d00ff', '#ff8c00'] }] },
         options: { ...chartStyles, plugins: { ...chartStyles.plugins, title: { text: 'Protocols Distribution' } } }
     });
 
-    portsChart = new Chart(document.getElementById('chart-ports'), {
+    portsChart = new Chart(ctx2, {
         type: 'pie',
-        data: { labels: [], datasets: [{ data: [], backgroundColor: ['#00f2ff', '#00ff41', '#f3ea5f', '#ff003c', '#9d00ff', '#ff1493'] }] },
+        data: { labels: [], datasets: [{ data: [], backgroundColor: ['#00d2ff', '#3aeb34', '#ffcc00', '#ff3131', '#9d00ff', '#ff8c00', '#ff1493'] }] },
         options: { ...chartStyles, plugins: { ...chartStyles.plugins, title: { text: 'Top Destination Ports' } } }
     });
 
-    talkersChart = new Chart(document.getElementById('chart-talkers'), {
+    talkersChart = new Chart(ctx3, {
         type: 'bar',
         data: { labels: [], datasets: [{ label: 'Bytes', data: [], backgroundColor: '#00ff41' }] },
         options: { 
             ...chartStyles, 
             plugins: { ...chartStyles.plugins, title: { text: 'Top Talkers (Bandwidth)' } },
-            scales: { y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#777', font: { size: 8 } } }, x: { grid: { display: false }, ticks: { color: '#777', font: { size: 8 } } } }
+            scales: { 
+                y: { grid: { color: 'rgba(0,0,0,0.1)' }, ticks: { color: '#333', font: { size: 8, weight: 'bold' } } }, 
+                x: { grid: { display: false }, ticks: { color: '#333', font: { size: 8, weight: 'bold' } } } 
+            }
         }
     });
 }
 
+// 2. File Handling
 const uploadZone = document.getElementById('upload-zone');
 const fileInput = document.getElementById('file-input');
 uploadZone.onclick = () => fileInput.click();
@@ -82,24 +100,20 @@ function processData(json) {
         if (l.http && l.http["http.host"]) domain = l.http["http.host"];
         else if (tls["tls.handshake"] && tls["tls.handshake"]["tls.handshake.extensions_server_name"]) domain = tls["tls.handshake"]["tls.handshake.extensions_server_name"];
 
-        const isRetrans = !!tcp["tcp.analysis.retransmission"];
-        const winSize = tcp["tcp.window_size_value"] || "---";
-        let level = (isReset || winSize === "0") ? "critical" : (isRetrans ? "warning" : "normal");
-
         return {
             delta: parseFloat(l.frame["frame.time_delta"] || 0).toFixed(4),
             src: ip["ip.src"] || ip["ipv6.src"] || "N/A",
             dst: ip["ip.dst"] || ip["ipv6.dst"] || "N/A",
             domain: domain,
             ttl: ip["ip.ttl"] || ip["ipv6.hlim"] || "---",
-            win: winSize,
+            win: tcp["tcp.window_size_value"] || "---",
             proto: l.frame["frame.protocols"].split(':').pop().toUpperCase(),
             port: tcp["tcp.dstport"] || udp["udp.dstport"] || "N/A",
             size: parseInt(l.frame["frame.len"] || 0),
             flags: flags.join(',') || "---",
             isReset: isReset,
-            isRetrans: isRetrans,
-            level: level,
+            isRetrans: !!tcp["tcp.analysis.retransmission"],
+            level: (isReset || tcp["tcp.window_size_value"] === "0") ? "critical" : (!!tcp["tcp.analysis.retransmission"] ? "warning" : "normal"),
             original: l
         };
     });
@@ -158,4 +172,8 @@ function updateUI() {
 function updateCharts() {
     if (!protoChart) return;
     const pMap = {}; filteredData.forEach(p => pMap[p.proto] = (pMap[p.proto] || 0) + 1);
-    protoChart.data.labels = Object.keys(pMap); protoChart.data.
+    protoChart.data.labels = Object.keys(pMap); protoChart.data.datasets[0].data = Object.values(pMap); protoChart.update();
+    const ptMap = {}; filteredData.filter(p => p.port !== "N/A").forEach(p => ptMap[p.port] = (ptMap[p.port] || 0) + 1);
+    const topPorts = Object.entries(ptMap).sort((a,b) => b[1]-a[1]).slice(0, 8);
+    portsChart.data.labels = topPorts.map(x => x[0]); portsChart.data.datasets[0].data = topPorts.map(x => x[1]); portsChart.update();
+    const talkMap = {}; filteredData.forEach(p => talkMap[p.src] = (talkMap[p.src] || 0) + p.size);
