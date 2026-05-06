@@ -3,33 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tshoot Tool Pro | By Selvin Mejia</title>
+    <title>Tshoot Tool | By Selvin Mejia</title>
     <link rel="stylesheet" href="styles.css">
+    <!-- External Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 </head>
-<body class="light-aero">
+<body class="dark-mode">
 
-    <!-- PACKET DETAIL MODAL - ULTRA CLEAR DESIGN -->
+    <!-- PACKET DETAIL MODAL -->
     <div id="packet-modal" class="modal hidden">
-        <div class="modal-window">
+        <div class="modal-content">
             <div class="modal-header">
-                <div class="window-controls">
-                    <span class="dot red"></span>
-                    <span class="dot yellow"></span>
-                    <span class="dot green"></span>
-                    <h2 class="modal-title">PACKET DEEP INSPECTION</h2>
+                <div class="header-title-box">
+                    <span class="terminal-dot red"></span>
+                    <span class="terminal-dot yellow"></span>
+                    <span class="terminal-dot green"></span>
+                    <h2 class="neon-text-blue">PACKET DEEP INSPECTION</h2>
                 </div>
                 <span class="close-modal">&times;</span>
             </div>
             <div class="modal-body">
-                <div class="terminal-info">DECODING FRAME DATA...</div>
+                <div class="terminal-loader">DECODING FRAME LAYERS...</div>
                 <pre id="json-display"></pre>
             </div>
             <div class="modal-footer">
-                <span>SECURITY LEVEL: LOCAL_RAM</span>
-                <span>ENGINE v2.5 PRO</span>
+                <p>FORENSIC ENGINE v2.5 | LOCAL BUFFER ENCRYPTED</p>
             </div>
         </div>
     </div>
@@ -38,10 +38,10 @@
     <section id="landing-screen" class="full-screen">
         <div class="upload-box horizontal-layout">
             <div class="brand-section">
-                <h1 class="main-title">TSHOOT <span class="text-blue">TOOL</span></h1>
-                <p class="subtitle">ADVANCED NETWORK FORENSICS</p>
+                <h1 class="neon-title animated-neon">TSHOOT <span class="neon-text-green">TOOL</span></h1>
+                <p class="subtitle">ADVANCED NETWORK FORENSICS v1.0</p>
                 <div class="brand-credits">
-                    <p class="credits-label">DEVELOPED BY</p>
+                    <p class="credits-label">SOFTWARE DEVELOPED BY</p>
                     <p class="credits-name">SELVIN MEJIA</p>
                 </div>
             </div>
@@ -50,12 +50,12 @@
                 <div id="upload-content">
                     <div class="icon-forensic">🔍</div>
                     <p class="main-instruction">Load Wireshark JSON Capture</p>
-                    <p class="sub-instruction"><span class="link-action">Click here to browse</span></p>
+                    <p class="sub-instruction"><span class="neon-green-link">Click here to browse</span></p>
                     <input type="file" id="file-input" hidden accept=".json">
                 </div>
                 
                 <div id="progress-container" class="hidden">
-                    <p id="progress-text">Deep Scanning...</p>
+                    <p id="progress-text">CYBER SCAN IN PROGRESS...</p>
                     <div class="progress-bar">
                         <div id="progress-fill"></div>
                     </div>
@@ -66,9 +66,9 @@
 
     <!-- MAIN DASHBOARD -->
     <section id="main-dashboard" class="hidden">
-        <header class="main-header">
+        <header class="cyber-header">
             <div class="logo-area">
-                <span class="logo-text">TSHOOT <span class="text-blue">TOOL</span></span>
+                <span class="logo-text animated-neon">TSHOOT <span class="neon-text-green">TOOL</span></span>
             </div>
             
             <div class="stats-pill-container">
@@ -78,34 +78,35 @@
                 <div class="stat-pill-item"><span class="stat-pill-label">UNIQUE IPs</span><span id="stat-ips" class="stat-pill-value text-blue">0</span></div>
             </div>
 
-            <div class="header-actions"><button id="export-pdf" class="btn-pdf">EXPORT REPORT</button></div>
+            <div class="header-actions"><button id="export-pdf" class="btn-neon-green">EXPORT PDF REPORT</button></div>
         </header>
 
         <div class="app-container">
             <aside class="sidebar">
                 <div class="sidebar-top">
-                    <h3 class="filter-title">FORENSIC FILTERS</h3>
+                    <h3 class="filter-title">FILTERS</h3>
                     <div class="filter-group"><label>Source IP</label><input type="text" id="filter-src-ip" placeholder="0.0.0.0"></div>
                     <div class="filter-group"><label>Destination IP</label><input type="text" id="filter-dst-ip" placeholder="0.0.0.0"></div>
                     <div class="filter-group">
                         <label>Protocol</label>
                         <select id="filter-proto"></select>
                     </div>
+                    <!-- NEW PORT FILTER -->
                     <div class="filter-group">
-                        <label>Target Port</label>
+                        <label>Port</label>
                         <input type="number" id="filter-port" placeholder="e.g. 443">
                     </div>
-                    <div class="filter-group"><label>TCP Flags</label><input type="text" id="filter-flags" placeholder="SYN, RST..."></div>
+                    <div class="filter-group"><label>TCP Flags</label><input type="text" id="filter-flags" placeholder="SYN, RST, ACK..."></div>
                     
-                    <button id="btn-only-errors" class="btn-errors">ERRORS ONLY</button>
+                    <button id="btn-only-errors" class="btn-warn">ERRORS ONLY</button>
                     <button id="btn-clear" class="btn-clear">CLEAR FILTERS</button>
                 </div>
                 
                 <div class="sidebar-bottom">
-                    <button id="btn-reset" class="btn-new">NEW FILE</button>
-                    <div class="sidebar-signature">
+                    <button id="btn-reset" class="btn-neon-blue-sidebar">NEW FILE</button>
+                    <div class="sidebar-signature-subtle">
                         <p class="privacy-badge">🔒 Local Processing Only</p>
-                        <p class="sig-name">BY SELVIN MEJIA</p>
+                        <p class="sig-name-subtle">BY SELVIN MEJIA</p>
                     </div>
                 </div>
             </aside>
@@ -121,15 +122,15 @@
                     <table id="traffic-table">
                         <thead>
                             <tr>
-                                <th class="col-delta">Delta</th>
-                                <th class="col-ip">Source IP</th>
-                                <th class="col-ip">Destination IP</th>
-                                <th class="col-domain">Domain / Host</th>
-                                <th class="col-ttl">TTL</th>
-                                <th class="col-win">Win</th>
-                                <th class="col-flags">Flags</th>
-                                <th class="col-port">Port</th>
-                                <th class="col-status">Status</th>
+                                <th class="col-delta"><span class="th-note" data-note="Time between frames.">Delta</span></th>
+                                <th class="col-ip"><span class="th-note" data-note="Origin IP.">Source IP</span></th>
+                                <th class="col-ip"><span class="th-note" data-note="Destination IP.">Destination IP</span></th>
+                                <th class="col-domain"><span class="th-note" data-note="HTTP Host / SNI Domain.">Domain / Host</span></th>
+                                <th class="col-ttl"><span class="th-note" data-note="Packet TTL (Hops).">TTL</span></th>
+                                <th class="col-win"><span class="th-note" data-note="TCP Receive Window.">Win</span></th>
+                                <th class="col-flags"><span class="th-note" data-note="TCP Control Flags.">Flags</span></th>
+                                <th class="col-port"><span class="th-note" data-note="Target Port.">Port</span></th>
+                                <th class="col-status"><span class="th-note" data-note="Status Analysis.">Status</span></th>
                             </tr>
                         </thead>
                         <tbody id="table-body"></tbody>
