@@ -6,10 +6,9 @@ let showOnlyErrors = false;
 function initCharts() {
     const chartStyles = {
         responsive: true, maintainAspectRatio: false,
-        events: ['mousemove', 'mouseout', 'touchstart', 'touchmove'],
         plugins: { 
-            legend: { position: 'top', labels: { color: '#777', font: { size: 9 } }, onClick: (e) => e.stopPropagation() }, 
-            title: { display: true, color: '#fff', font: { size: 12, weight: 'bold' }, padding: { top: 0, bottom: 15 } } 
+            legend: { position: 'top', labels: { color: '#aaa', font: { size: 9 } }, onClick: (e) => e.stopPropagation() }, 
+            title: { display: true, color: '#fff', font: { size: 11, weight: 'bold' } } 
         }
     };
     if (protoChart) protoChart.destroy();
@@ -31,7 +30,11 @@ function initCharts() {
     talkersChart = new Chart(document.getElementById('chart-talkers'), {
         type: 'bar',
         data: { labels: [], datasets: [{ label: 'Bytes', data: [], backgroundColor: '#00ff41' }] },
-        options: { ...chartStyles, plugins: { ...chartStyles.plugins, title: { text: 'Top Talkers (Bandwidth)' } }, scales: { y: { grid: { color: '#333' }, ticks: { color: '#777', font: { size: 8 } } }, x: { grid: { display: false }, ticks: { color: '#777', font: { size: 8 } } } } }
+        options: { 
+            ...chartStyles, 
+            plugins: { ...chartStyles.plugins, title: { text: 'Top Talkers (Bandwidth)' } },
+            scales: { y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#777', font: { size: 8 } } }, x: { grid: { display: false }, ticks: { color: '#777', font: { size: 8 } } } }
+        }
     });
 }
 
@@ -81,6 +84,7 @@ function processData(json) {
 
         const isRetrans = !!tcp["tcp.analysis.retransmission"];
         const winSize = tcp["tcp.window_size_value"] || "---";
+        let level = (isReset || winSize === "0") ? "critical" : (isRetrans ? "warning" : "normal");
 
         return {
             delta: parseFloat(l.frame["frame.time_delta"] || 0).toFixed(4),
@@ -95,7 +99,7 @@ function processData(json) {
             flags: flags.join(',') || "---",
             isReset: isReset,
             isRetrans: isRetrans,
-            level: (isReset || winSize === "0") ? "critical" : (isRetrans ? "warning" : "normal"),
+            level: level,
             original: l
         };
     });
@@ -125,8 +129,8 @@ function applyFilters() {
 
 document.getElementById('btn-clear').onclick = () => {
     document.getElementById('filter-src-ip').value = ""; document.getElementById('filter-dst-ip').value = "";
-    document.getElementById('filter-proto').value = "all"; document.getElementById('filter-port').value = "";
-    document.getElementById('filter-flags').value = "";
+    document.getElementById('filter-proto').value = "all"; document.getElementById('filter-flags').value = "";
+    document.getElementById('filter-port').value = "";
     showOnlyErrors = false; document.getElementById('btn-only-errors').classList.remove('active');
     applyFilters();
 };
@@ -137,7 +141,7 @@ function updateUI() {
     filteredData.slice(0, 300).forEach(p => {
         const tr = document.createElement('tr');
         tr.className = `row-${p.level}`;
-        tr.innerHTML = `<td class="col-delta">${p.delta} s</td><td class="col-ip">${p.src}</td><td class="col-ip">${p.dst}</td><td class="col-domain" style="color:var(--neon-blue)">${p.domain}</td><td class="col-ttl" style="text-align:left">${p.ttl}</td><td class="col-win" style="text-align:left">${p.win}</td><td class="col-flags">${p.flags}</td><td class="col-port">${p.port}</td><td class="col-status">${p.level.toUpperCase()}</td>`;
+        tr.innerHTML = `<td class="col-delta">${p.delta} s</td><td class="col-ip">${p.src}</td><td class="col-ip">${p.dst}</td><td class="col-domain" style="color:var(--neon-blue)">${p.domain}</td><td class="col-ttl">${p.ttl}</td><td class="col-win">${p.win}</td><td class="col-flags">${p.flags}</td><td class="col-port">${p.port}</td><td class="col-status">${p.level.toUpperCase()}</td>`;
         tr.onclick = () => { 
             document.getElementById('json-display').innerText = JSON.stringify(p.original, null, 4); 
             document.getElementById('packet-modal').classList.remove('hidden'); 
@@ -154,29 +158,4 @@ function updateUI() {
 function updateCharts() {
     if (!protoChart) return;
     const pMap = {}; filteredData.forEach(p => pMap[p.proto] = (pMap[p.proto] || 0) + 1);
-    protoChart.data.labels = Object.keys(pMap); protoChart.data.datasets[0].data = Object.values(pMap); protoChart.update();
-    const ptMap = {}; filteredData.filter(p => p.port !== "N/A").forEach(p => ptMap[p.port] = (ptMap[p.port] || 0) + 1);
-    const topPorts = Object.entries(ptMap).sort((a,b) => b[1]-a[1]).slice(0, 8);
-    portsChart.data.labels = topPorts.map(x => x[0]); portsChart.data.datasets[0].data = topPorts.map(x => x[1]); portsChart.update();
-    const talkMap = {}; filteredData.forEach(p => talkMap[p.src] = (talkMap[p.src] || 0) + p.size);
-    const topTalkers = Object.entries(talkMap).sort((a,b) => b[1]-a[1]).slice(0, 5);
-    talkersChart.data.labels = topTalkers.map(x => x[0]); talkersChart.data.datasets[0].data = topTalkers.map(x => x[1]); talkersChart.update();
-}
-
-document.querySelector('.close-modal').onclick = () => document.getElementById('packet-modal').classList.add('hidden');
-window.onclick = (e) => { if (e.target == document.getElementById('packet-modal')) document.getElementById('packet-modal').classList.add('hidden'); };
-
-document.getElementById('filter-src-ip').oninput = applyFilters;
-document.getElementById('filter-dst-ip').oninput = applyFilters;
-document.getElementById('filter-proto').onchange = applyFilters;
-document.getElementById('filter-port').oninput = applyFilters;
-document.getElementById('filter-flags').oninput = applyFilters;
-
-document.getElementById('btn-only-errors').onclick = function() { showOnlyErrors = !showOnlyErrors; this.classList.toggle('active'); applyFilters(); };
-document.getElementById('btn-reset').onclick = () => location.reload();
-document.getElementById('export-pdf').onclick = () => {
-    const { jsPDF } = window.jspdf; const doc = new jsPDF('l', 'mm', 'a4');
-    doc.text("Network Forensic Report - Selvin Mejia", 14, 15);
-    doc.autoTable({ head: [['Delta', 'Source', 'Destination', 'Domain', 'TTL', 'Win', 'Flags', 'Port', 'Status']], body: filteredData.slice(0, 50).map(p => [p.delta, p.src, p.dst, p.domain, p.ttl, p.win, p.flags, p.port, p.level]), startY: 25 });
-    doc.save('Forensic_Report.pdf');
-};
+    protoChart.data.labels = Object.keys(pMap); protoChart.data.
