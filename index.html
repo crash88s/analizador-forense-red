@@ -9,10 +9,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 </head>
-<body class="dark-mode">
+<body class="crystal-mode">
 
+    <!-- PACKET DETAIL MODAL - CRYSTAL REDESIGN -->
     <div id="packet-modal" class="modal hidden">
-        <div class="modal-content">
+        <div class="modal-content crystal-card">
             <div class="modal-header">
                 <div class="header-title-box">
                     <span class="terminal-dot red"></span>
@@ -27,13 +28,14 @@
                 <pre id="json-display"></pre>
             </div>
             <div class="modal-footer">
-                <p>FORENSIC ENGINE v2.5 | LOCAL BUFFER ENCRYPTED</p>
+                <p>FORENSIC ENGINE v2.5 | LOCAL PROCESSING</p>
             </div>
         </div>
     </div>
 
+    <!-- LANDING SCREEN -->
     <section id="landing-screen" class="full-screen">
-        <div class="upload-box horizontal-layout">
+        <div class="upload-box horizontal-layout crystal-card">
             <div class="brand-section">
                 <h1 class="neon-title animated-neon">TSHOOT <span class="neon-text-green">TOOL</span></h1>
                 <p class="subtitle">ADVANCED NETWORK FORENSICS v2.5</p>
@@ -43,7 +45,7 @@
                 </div>
             </div>
             
-            <div class="upload-zone" id="upload-zone">
+            <div class="upload-zone crystal-card" id="upload-zone">
                 <div id="upload-content">
                     <div class="icon-forensic">🔍</div>
                     <p class="main-instruction">Load Wireshark JSON Capture</p>
@@ -61,32 +63,43 @@
         </div>
     </section>
 
+    <!-- MAIN DASHBOARD -->
     <section id="main-dashboard" class="hidden">
-        <header class="cyber-header">
+        <header class="cyber-header crystal-card">
             <div class="logo-area">
                 <span class="logo-text animated-neon">TSHOOT <span class="neon-text-green">TOOL</span></span>
             </div>
-            <div class="stats-pill-container">
+            
+            <div class="stats-pill-container crystal-card">
                 <div class="stat-pill-item"><span class="stat-pill-label">PACKETS</span><span id="stat-packets" class="stat-pill-value">0</span></div>
                 <div class="stat-pill-item"><span class="stat-pill-label">ERRORS</span><span id="stat-resets" class="stat-pill-value text-danger">0</span></div>
                 <div class="stat-pill-item"><span class="stat-pill-label">RETRANS.</span><span id="stat-retrans" class="stat-pill-value text-warning">0</span></div>
                 <div class="stat-pill-item"><span class="stat-pill-label">UNIQUE IPs</span><span id="stat-ips" class="stat-pill-value text-blue">0</span></div>
             </div>
-            <div class="header-actions"><button id="export-pdf" class="btn-neon-green">EXPORT PDF REPORT</button></div>
+
+            <div class="header-actions"><button id="export-pdf" class="btn-neon-green">EXPORT PDF</button></div>
         </header>
 
         <div class="app-container">
-            <aside class="sidebar">
+            <aside class="sidebar crystal-card">
                 <div class="sidebar-top">
                     <h3 class="filter-title">FORENSIC FILTERS</h3>
                     <div class="filter-group"><label>Source IP</label><input type="text" id="filter-src-ip" placeholder="0.0.0.0"></div>
                     <div class="filter-group"><label>Destination IP</label><input type="text" id="filter-dst-ip" placeholder="0.0.0.0"></div>
-                    <div class="filter-group"><label>Protocol</label><select id="filter-proto"></select></div>
-                    <div class="filter-group"><label>Port</label><input type="number" id="filter-port" placeholder="e.g. 443"></div>
-                    <div class="filter-group"><label>TCP Flags</label><input type="text" id="filter-flags" placeholder="SYN, RST, ACK..."></div>
+                    <div class="filter-group">
+                        <label>Protocol</label>
+                        <select id="filter-proto"></select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Target Port</label>
+                        <input type="number" id="filter-port" placeholder="e.g. 443">
+                    </div>
+                    <div class="filter-group"><label>TCP Flags</label><input type="text" id="filter-flags" placeholder="SYN, RST..."></div>
+                    
                     <button id="btn-only-errors" class="btn-warn">ERRORS ONLY</button>
                     <button id="btn-clear" class="btn-clear">CLEAR FILTERS</button>
                 </div>
+                
                 <div class="sidebar-bottom">
                     <button id="btn-reset" class="btn-neon-blue-sidebar">NEW FILE</button>
                     <div class="sidebar-signature-subtle">
@@ -98,23 +111,24 @@
 
             <main class="content">
                 <div class="charts-row">
-                    <div class="chart-box"><canvas id="chart-protocols"></canvas></div>
-                    <div class="chart-box"><canvas id="chart-ports"></canvas></div>
-                    <div class="chart-box"><canvas id="chart-talkers"></canvas></div>
+                    <div class="chart-box crystal-card"><canvas id="chart-protocols"></canvas></div>
+                    <div class="chart-box crystal-card"><canvas id="chart-ports"></canvas></div>
+                    <div class="chart-box crystal-card"><canvas id="chart-talkers"></canvas></div>
                 </div>
-                <div class="table-wrapper">
+
+                <div class="table-wrapper crystal-card">
                     <table id="traffic-table">
                         <thead>
                             <tr>
                                 <th class="col-delta"><span class="th-note" data-note="Time between frames.">Delta</span></th>
-                                <th class="col-ip"><span class="th-note" data-note="Origin IP address.">Source IP</span></th>
-                                <th class="col-ip"><span class="th-note" data-note="Destination IP address.">Destination IP</span></th>
-                                <th class="col-domain"><span class="th-note" data-note="Domain via HTTP Host / TLS SNI.">Domain / Host</span></th>
-                                <th class="col-ttl"><span class="th-note" data-note="Time To Live (Hops).">TTL</span></th>
-                                <th class="col-win"><span class="th-note" data-note="TCP Window size (Buffer).">Win</span></th>
-                                <th class="col-flags"><span class="th-note" data-note="TCP Control Flags.">Flags</span></th>
-                                <th class="col-port"><span class="th-note" data-note="Service Destination Port.">Port</span></th>
-                                <th class="col-status"><span class="th-note" data-note="Forensic Analysis Status.">Status</span></th>
+                                <th class="col-ip"><span class="th-note" data-note="Origin IP.">Source IP</span></th>
+                                <th class="col-ip"><span class="th-note" data-note="Destination IP.">Destination IP</span></th>
+                                <th class="col-domain"><span class="th-note" data-note="Domain (HTTP/TLS).">Domain / Host</span></th>
+                                <th class="col-ttl"><span class="th-note" data-note="TTL (Hops).">TTL</span></th>
+                                <th class="col-win"><span class="th-note" data-note="Window Size.">Win</span></th>
+                                <th class="col-flags"><span class="th-note" data-note="TCP Flags.">Flags</span></th>
+                                <th class="col-port"><span class="th-note" data-note="Port.">Port</span></th>
+                                <th class="col-status"><span class="th-note" data-note="Forensic Status.">Status</span></th>
                             </tr>
                         </thead>
                         <tbody id="table-body"></tbody>
@@ -123,6 +137,7 @@
             </main>
         </div>
     </section>
+
     <script src="analyzer.js"></script>
 </body>
 </html>
