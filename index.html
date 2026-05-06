@@ -3,16 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tshoot Tool | By Selvin Mejia</title>
+    <title>Tshoot Tool Pro | By Selvin Mejia</title>
     <link rel="stylesheet" href="styles.css">
-    <!-- External Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 </head>
 <body class="dark-mode">
 
-    <!-- PACKET DETAIL MODAL -->
     <div id="packet-modal" class="modal hidden">
         <div class="modal-content">
             <div class="modal-header">
@@ -34,12 +32,11 @@
         </div>
     </div>
 
-    <!-- LANDING SCREEN -->
     <section id="landing-screen" class="full-screen">
         <div class="upload-box horizontal-layout">
             <div class="brand-section">
                 <h1 class="neon-title animated-neon">TSHOOT <span class="neon-text-green">TOOL</span></h1>
-                <p class="subtitle">ADVANCED NETWORK FORENSICS v1.0</p>
+                <p class="subtitle">ADVANCED NETWORK FORENSICS v2.5</p>
                 <div class="brand-credits">
                     <p class="credits-label">SOFTWARE DEVELOPED BY</p>
                     <p class="credits-name">SELVIN MEJIA</p>
@@ -64,44 +61,32 @@
         </div>
     </section>
 
-    <!-- MAIN DASHBOARD -->
     <section id="main-dashboard" class="hidden">
         <header class="cyber-header">
             <div class="logo-area">
                 <span class="logo-text animated-neon">TSHOOT <span class="neon-text-green">TOOL</span></span>
             </div>
-            
             <div class="stats-pill-container">
                 <div class="stat-pill-item"><span class="stat-pill-label">PACKETS</span><span id="stat-packets" class="stat-pill-value">0</span></div>
                 <div class="stat-pill-item"><span class="stat-pill-label">ERRORS</span><span id="stat-resets" class="stat-pill-value text-danger">0</span></div>
                 <div class="stat-pill-item"><span class="stat-pill-label">RETRANS.</span><span id="stat-retrans" class="stat-pill-value text-warning">0</span></div>
                 <div class="stat-pill-item"><span class="stat-pill-label">UNIQUE IPs</span><span id="stat-ips" class="stat-pill-value text-blue">0</span></div>
             </div>
-
             <div class="header-actions"><button id="export-pdf" class="btn-neon-green">EXPORT PDF REPORT</button></div>
         </header>
 
         <div class="app-container">
             <aside class="sidebar">
                 <div class="sidebar-top">
-                    <h3 class="filter-title">FILTERS</h3>
+                    <h3 class="filter-title">FORENSIC FILTERS</h3>
                     <div class="filter-group"><label>Source IP</label><input type="text" id="filter-src-ip" placeholder="0.0.0.0"></div>
                     <div class="filter-group"><label>Destination IP</label><input type="text" id="filter-dst-ip" placeholder="0.0.0.0"></div>
-                    <div class="filter-group">
-                        <label>Protocol</label>
-                        <select id="filter-proto"></select>
-                    </div>
-                    <!-- NEW PORT FILTER -->
-                    <div class="filter-group">
-                        <label>Port</label>
-                        <input type="number" id="filter-port" placeholder="e.g. 443">
-                    </div>
+                    <div class="filter-group"><label>Protocol</label><select id="filter-proto"></select></div>
+                    <div class="filter-group"><label>Port</label><input type="number" id="filter-port" placeholder="e.g. 443"></div>
                     <div class="filter-group"><label>TCP Flags</label><input type="text" id="filter-flags" placeholder="SYN, RST, ACK..."></div>
-                    
                     <button id="btn-only-errors" class="btn-warn">ERRORS ONLY</button>
                     <button id="btn-clear" class="btn-clear">CLEAR FILTERS</button>
                 </div>
-                
                 <div class="sidebar-bottom">
                     <button id="btn-reset" class="btn-neon-blue-sidebar">NEW FILE</button>
                     <div class="sidebar-signature-subtle">
@@ -117,20 +102,19 @@
                     <div class="chart-box"><canvas id="chart-ports"></canvas></div>
                     <div class="chart-box"><canvas id="chart-talkers"></canvas></div>
                 </div>
-
                 <div class="table-wrapper">
                     <table id="traffic-table">
                         <thead>
                             <tr>
                                 <th class="col-delta"><span class="th-note" data-note="Time between frames.">Delta</span></th>
-                                <th class="col-ip"><span class="th-note" data-note="Origin IP.">Source IP</span></th>
-                                <th class="col-ip"><span class="th-note" data-note="Destination IP.">Destination IP</span></th>
-                                <th class="col-domain"><span class="th-note" data-note="HTTP Host / SNI Domain.">Domain / Host</span></th>
-                                <th class="col-ttl"><span class="th-note" data-note="Packet TTL (Hops).">TTL</span></th>
-                                <th class="col-win"><span class="th-note" data-note="TCP Receive Window.">Win</span></th>
+                                <th class="col-ip"><span class="th-note" data-note="Origin IP address.">Source IP</span></th>
+                                <th class="col-ip"><span class="th-note" data-note="Destination IP address.">Destination IP</span></th>
+                                <th class="col-domain"><span class="th-note" data-note="Domain via HTTP Host / TLS SNI.">Domain / Host</span></th>
+                                <th class="col-ttl"><span class="th-note" data-note="Time To Live (Hops).">TTL</span></th>
+                                <th class="col-win"><span class="th-note" data-note="TCP Window size (Buffer).">Win</span></th>
                                 <th class="col-flags"><span class="th-note" data-note="TCP Control Flags.">Flags</span></th>
-                                <th class="col-port"><span class="th-note" data-note="Target Port.">Port</span></th>
-                                <th class="col-status"><span class="th-note" data-note="Status Analysis.">Status</span></th>
+                                <th class="col-port"><span class="th-note" data-note="Service Destination Port.">Port</span></th>
+                                <th class="col-status"><span class="th-note" data-note="Forensic Analysis Status.">Status</span></th>
                             </tr>
                         </thead>
                         <tbody id="table-body"></tbody>
@@ -139,7 +123,6 @@
             </main>
         </div>
     </section>
-
     <script src="analyzer.js"></script>
 </body>
 </html>
