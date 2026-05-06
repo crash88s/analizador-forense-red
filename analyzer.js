@@ -3,17 +3,14 @@ let filteredData = [];
 let protoChart, portsChart, talkersChart;
 let showOnlyErrors = false;
 
-// 1. Chart Initialization - OPTIMIZED FOR LIGHT THEME
+// 1. Chart Initialization
 function initCharts() {
     const chartStyles = {
         responsive: true, maintainAspectRatio: false,
+        events: ['mousemove', 'mouseout', 'touchstart', 'touchmove'],
         plugins: { 
-            legend: { 
-                position: 'top', 
-                labels: { color: '#1e293b', font: { size: 10, weight: 'bold' } },
-                onClick: (e) => e.stopPropagation()
-            }, 
-            title: { display: true, color: '#0f172a', font: { size: 12, weight: '900' } } 
+            legend: { position: 'top', labels: { color: '#777', font: { size: 9 } }, onClick: (e) => e.stopPropagation() }, 
+            title: { display: true, color: '#fff', font: { size: 12, weight: 'bold' }, padding: { top: 0, bottom: 15 } } 
         }
     };
     if (protoChart) protoChart.destroy();
@@ -22,23 +19,23 @@ function initCharts() {
 
     protoChart = new Chart(document.getElementById('chart-protocols'), {
         type: 'doughnut',
-        data: { labels: [], datasets: [{ data: [], backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4'] }] },
-        options: { ...chartStyles, plugins: { ...chartStyles.plugins, title: { text: 'Protocols Distribution' } } }
+        data: { labels: [], datasets: [{ data: [], backgroundColor: ['#00f2ff', '#00ff41', '#f3ea5f', '#ff003c', '#9d00ff', '#ff8c00'] }] },
+        options: { ...chartStyles, plugins: { ...chartStyles.plugins, title: { ...chartStyles.plugins.title, text: 'Protocols Distribution' } } }
     });
 
     portsChart = new Chart(document.getElementById('chart-ports'), {
         type: 'pie',
-        data: { labels: [], datasets: [{ data: [], backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#ec4899'] }] },
-        options: { ...chartStyles, plugins: { ...chartStyles.plugins, title: { text: 'Top Destination Ports' } } }
+        data: { labels: [], datasets: [{ data: [], backgroundColor: ['#00f2ff', '#00ff41', '#f3ea5f', '#ff003c', '#9d00ff', '#ff1493'] }] },
+        options: { ...chartStyles, plugins: { ...chartStyles.plugins, title: { ...chartStyles.plugins.title, text: 'Top Destination Ports' } } }
     });
 
     talkersChart = new Chart(document.getElementById('chart-talkers'), {
         type: 'bar',
-        data: { labels: [], datasets: [{ label: 'Bytes', data: [], backgroundColor: '#3b82f6' }] },
+        data: { labels: [], datasets: [{ label: 'Bytes', data: [], backgroundColor: '#00ff41' }] },
         options: { 
             ...chartStyles, 
-            plugins: { ...chartStyles.plugins, title: { text: 'Top Talkers (Bandwidth)' } },
-            scales: { y: { grid: { color: '#e2e8f0' }, ticks: { color: '#64748b', font: { size: 9 } } }, x: { grid: { display: false }, ticks: { color: '#64748b', font: { size: 9 } } } }
+            plugins: { ...chartStyles.plugins, title: { ...chartStyles.plugins.title, text: 'Top Talkers (Bandwidth)' } },
+            scales: { y: { grid: { color: '#111' }, ticks: { color: '#444', font: { size: 8 } } }, x: { grid: { display: false }, ticks: { color: '#444', font: { size: 8 } } } }
         }
     });
 }
@@ -69,7 +66,7 @@ function handleFile(file) {
     reader.readAsText(file);
 }
 
-// 3. Data Processing
+// 3. Processing
 function processData(json) {
     rawData = json.map(p => {
         const l = p._source.layers;
@@ -77,8 +74,6 @@ function processData(json) {
         const tcp = l.tcp || {};
         const udp = l.udp || {};
         const tls = l.tls || {};
-        const http = l.http || {};
-        
         let flags = [];
         let isReset = false;
         if (tcp["tcp.flags_tree"]) {
@@ -88,7 +83,7 @@ function processData(json) {
             if (f["tcp.flags.ack"] == "1") flags.push("ACK");
         }
         let domain = "---";
-        if (http["http.host"]) domain = http["http.host"];
+        if (l.http && l.http["http.host"]) domain = l.http["http.host"];
         else if (tls["tls.handshake"] && tls["tls.handshake"]["tls.handshake.extensions_server_name"]) domain = tls["tls.handshake"]["tls.handshake.extensions_server_name"];
 
         const isRetrans = !!tcp["tcp.analysis.retransmission"];
@@ -117,13 +112,14 @@ function processData(json) {
     protos.forEach(pr => select.innerHTML += `<option value="${pr}">${pr}</option>`);
 }
 
-// 4. Filters
+// 4. Filtering Logic
 function applyFilters() {
     const srcInput = document.getElementById('filter-src-ip').value.toLowerCase();
     const dstInput = document.getElementById('filter-dst-ip').value.toLowerCase();
     const protoSelect = document.getElementById('filter-proto').value;
     const portInput = document.getElementById('filter-port').value;
     const flagInput = document.getElementById('filter-flags').value.toUpperCase();
+
     filteredData = rawData.filter(p => {
         const matchSrc = (srcInput === "" || p.src.toLowerCase().includes(srcInput));
         const matchDst = (dstInput === "" || p.dst.toLowerCase().includes(dstInput));
@@ -131,16 +127,20 @@ function applyFilters() {
         const matchPort = (portInput === "" || p.port.toString() === portInput);
         const matchFlags = (flagInput === "" || p.flags.includes(flagInput));
         const matchError = (!showOnlyErrors || p.level !== "normal");
+
         return matchSrc && matchDst && matchProto && matchPort && matchFlags && matchError;
     });
     updateUI();
 }
 
 document.getElementById('btn-clear').onclick = () => {
-    document.getElementById('filter-src-ip').value = ""; document.getElementById('filter-dst-ip').value = "";
-    document.getElementById('filter-proto').value = "all"; document.getElementById('filter-flags').value = "";
+    document.getElementById('filter-src-ip').value = "";
+    document.getElementById('filter-dst-ip').value = "";
+    document.getElementById('filter-proto').value = "all";
     document.getElementById('filter-port').value = "";
-    showOnlyErrors = false; document.getElementById('btn-only-errors').classList.remove('active');
+    document.getElementById('filter-flags').value = "";
+    showOnlyErrors = false;
+    document.getElementById('btn-only-errors').classList.remove('active');
     applyFilters();
 };
 
@@ -150,7 +150,7 @@ function updateUI() {
     filteredData.slice(0, 300).forEach(p => {
         const tr = document.createElement('tr');
         tr.className = `row-${p.level}`;
-        tr.innerHTML = `<td class="col-delta">${p.delta} s</td><td class="col-ip">${p.src}</td><td class="col-ip">${p.dst}</td><td class="col-domain" style="color:var(--accent-blue); font-weight:bold">${p.domain}</td><td class="col-ttl">${p.ttl}</td><td class="col-win">${p.win}</td><td class="col-flags">${p.flags}</td><td class="col-port">${p.port}</td><td class="col-status">${p.level.toUpperCase()}</td>`;
+        tr.innerHTML = `<td class="col-delta">${p.delta} s</td><td class="col-ip">${p.src}</td><td class="col-ip">${p.dst}</td><td class="col-domain" style="color:var(--neon-blue)">${p.domain}</td><td class="col-ttl" style="text-align:left">${p.ttl}</td><td class="col-win" style="text-align:left">${p.win}</td><td class="col-flags">${p.flags}</td><td class="col-port">${p.port}</td><td class="col-status">${p.level.toUpperCase()}</td>`;
         tr.onclick = () => { 
             document.getElementById('json-display').innerText = JSON.stringify(p.original, null, 4); 
             document.getElementById('packet-modal').classList.remove('hidden'); 
