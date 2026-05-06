@@ -3,18 +3,17 @@ let filteredData = [];
 let protoChart, portsChart, talkersChart;
 let showOnlyErrors = false;
 
-// 1. Chart Initialization - OPTIMIZED FOR LIGHT BOXES
+// 1. Chart Initialization - OPTIMIZED FOR LIGHT THEME
 function initCharts() {
     const chartStyles = {
         responsive: true, maintainAspectRatio: false,
-        events: ['mousemove', 'mouseout', 'touchstart', 'touchmove'],
         plugins: { 
             legend: { 
                 position: 'top', 
-                labels: { color: '#334155', font: { size: 9, weight: 'bold' } },
+                labels: { color: '#1e293b', font: { size: 10, weight: 'bold' } },
                 onClick: (e) => e.stopPropagation()
             }, 
-            title: { display: true, color: '#0f172a', font: { size: 11, weight: 'bold' } } 
+            title: { display: true, color: '#0f172a', font: { size: 12, weight: '900' } } 
         }
     };
     if (protoChart) protoChart.destroy();
@@ -23,14 +22,14 @@ function initCharts() {
 
     protoChart = new Chart(document.getElementById('chart-protocols'), {
         type: 'doughnut',
-        data: { labels: [], datasets: [{ data: [], backgroundColor: ['#3b82f6', '#22c55e', '#f59e0b', '#ef4444', '#8b5cf6'] }] },
+        data: { labels: [], datasets: [{ data: [], backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4'] }] },
         options: { ...chartStyles, plugins: { ...chartStyles.plugins, title: { text: 'Protocols Distribution' } } }
     });
 
     portsChart = new Chart(document.getElementById('chart-ports'), {
         type: 'pie',
-        data: { labels: [], datasets: [{ data: [], backgroundColor: ['#3b82f6', '#22c55e', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4'] }] },
-        options: { ...chartStyles, plugins: { ...chartStyles.plugins, title: { text: 'Top Ports' } } }
+        data: { labels: [], datasets: [{ data: [], backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#ec4899'] }] },
+        options: { ...chartStyles, plugins: { ...chartStyles.plugins, title: { text: 'Top Destination Ports' } } }
     });
 
     talkersChart = new Chart(document.getElementById('chart-talkers'), {
@@ -38,8 +37,8 @@ function initCharts() {
         data: { labels: [], datasets: [{ label: 'Bytes', data: [], backgroundColor: '#3b82f6' }] },
         options: { 
             ...chartStyles, 
-            plugins: { ...chartStyles.plugins, title: { text: 'Top Talkers' } },
-            scales: { y: { grid: { color: '#e2e8f0' }, ticks: { color: '#64748b', font: { size: 8 } } }, x: { grid: { display: false }, ticks: { color: '#64748b', font: { size: 8 } } } }
+            plugins: { ...chartStyles.plugins, title: { text: 'Top Talkers (Bandwidth)' } },
+            scales: { y: { grid: { color: '#e2e8f0' }, ticks: { color: '#64748b', font: { size: 9 } } }, x: { grid: { display: false }, ticks: { color: '#64748b', font: { size: 9 } } } }
         }
     });
 }
@@ -54,7 +53,6 @@ function handleFile(file) {
     if (!file || !file.name.endsWith('.json')) { alert("Please upload a valid JSON file."); return; }
     document.getElementById('upload-content').classList.add('hidden');
     document.getElementById('progress-container').classList.remove('hidden');
-    
     const reader = new FileReader();
     reader.onprogress = (e) => { if (e.lengthComputable) document.getElementById('progress-fill').style.width = (e.loaded / e.total * 100) + '%'; };
     reader.onload = (e) => {
@@ -71,7 +69,7 @@ function handleFile(file) {
     reader.readAsText(file);
 }
 
-// 3. Deep Analysis Logic
+// 3. Data Processing
 function processData(json) {
     rawData = json.map(p => {
         const l = p._source.layers;
@@ -89,7 +87,6 @@ function processData(json) {
             if (f["tcp.flags.reset"] == "1") { flags.push("RST"); isReset = true; }
             if (f["tcp.flags.ack"] == "1") flags.push("ACK");
         }
-        
         let domain = "---";
         if (http["http.host"]) domain = http["http.host"];
         else if (tls["tls.handshake"] && tls["tls.handshake"]["tls.handshake.extensions_server_name"]) domain = tls["tls.handshake"]["tls.handshake.extensions_server_name"];
@@ -114,7 +111,6 @@ function processData(json) {
             original: l
         };
     });
-    
     const protos = [...new Set(rawData.map(p => p.proto))];
     const select = document.getElementById('filter-proto');
     select.innerHTML = '<option value="all">All Protocols</option>';
@@ -128,7 +124,6 @@ function applyFilters() {
     const protoSelect = document.getElementById('filter-proto').value;
     const portInput = document.getElementById('filter-port').value;
     const flagInput = document.getElementById('filter-flags').value.toUpperCase();
-
     filteredData = rawData.filter(p => {
         const matchSrc = (srcInput === "" || p.src.toLowerCase().includes(srcInput));
         const matchDst = (dstInput === "" || p.dst.toLowerCase().includes(dstInput));
@@ -155,14 +150,13 @@ function updateUI() {
     filteredData.slice(0, 300).forEach(p => {
         const tr = document.createElement('tr');
         tr.className = `row-${p.level}`;
-        tr.innerHTML = `<td class="col-delta">${p.delta} s</td><td class="col-ip">${p.src}</td><td class="col-ip">${p.dst}</td><td class="col-domain" style="color:#60a5fa">${p.domain}</td><td class="col-ttl">${p.ttl}</td><td class="col-win">${p.win}</td><td class="col-flags">${p.flags}</td><td class="col-port">${p.port}</td><td class="col-status">${p.level.toUpperCase()}</td>`;
+        tr.innerHTML = `<td class="col-delta">${p.delta} s</td><td class="col-ip">${p.src}</td><td class="col-ip">${p.dst}</td><td class="col-domain" style="color:var(--accent-blue); font-weight:bold">${p.domain}</td><td class="col-ttl">${p.ttl}</td><td class="col-win">${p.win}</td><td class="col-flags">${p.flags}</td><td class="col-port">${p.port}</td><td class="col-status">${p.level.toUpperCase()}</td>`;
         tr.onclick = () => { 
             document.getElementById('json-display').innerText = JSON.stringify(p.original, null, 4); 
             document.getElementById('packet-modal').classList.remove('hidden'); 
         };
         tbody.appendChild(tr);
     });
-    
     document.getElementById('stat-packets').innerText = filteredData.length.toLocaleString();
     document.getElementById('stat-resets').innerText = rawData.filter(p => p.isReset).length;
     document.getElementById('stat-retrans').innerText = rawData.filter(p => p.isRetrans).length;
@@ -190,6 +184,7 @@ document.getElementById('filter-dst-ip').oninput = applyFilters;
 document.getElementById('filter-proto').onchange = applyFilters;
 document.getElementById('filter-port').oninput = applyFilters;
 document.getElementById('filter-flags').oninput = applyFilters;
+
 document.getElementById('btn-only-errors').onclick = function() { showOnlyErrors = !showOnlyErrors; this.classList.toggle('active'); applyFilters(); };
 document.getElementById('btn-reset').onclick = () => location.reload();
 document.getElementById('export-pdf').onclick = () => {
